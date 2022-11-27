@@ -9,7 +9,7 @@ FROM ubuntu:22.04
 #     && apt-get clean && \
 #     rm -rf /var/lib/apt/lists/*
 RUN apt-get update && \
-    apt-get install -y  --no-install-recommends --force-yes wget && \
+    apt-get install -y  --no-install-recommends wget ca-certificates && \
     apt-cache search ceph-common
 
 RUN wget -P /tmp https://ftp.debian.org/debian/pool/main/r/runit/runit_${RUNIT_VER}.orig.tar.gz && \
