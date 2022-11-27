@@ -10,7 +10,8 @@ ARG CEPH_VERSION=nautilus
 #     && dpkg -s $PACKAGES \
 #     && apt-get clean && \
 #     rm -rf /var/lib/apt/lists/*
-RUN VERSION_CODENAME=$(cat /etc/os-release | grep VERSION_CODENAME | awk -F= '{print $2}') && \
+RUN wget -q -O- 'https://download.ceph.com/keys/release.asc' | sudo apt-key add - && \
+    VERSION_CODENAME=$(cat /etc/os-release | grep VERSION_CODENAME | awk -F= '{print $2}') && \
     echo "deb http://download.ceph.com/debian-$CEPH_VERSION/ $VERSION_CODENAME main" | tee /etc/apt/sources.list.d/ceph-$CEPH_VERSION.list && \
     apt-get update && \
     apt-get install -y  --no-install-recommends \
