@@ -18,7 +18,7 @@ RUN apt-get update && \
     procps \
     runit && \
     ls -la /usr/bin/ && \
-    ls -la /sbin/start_runit && \
+    ls -la /sbin/ && \
     cat /sbin/start_runit
 
 RUN wget -q -O- 'https://download.ceph.com/keys/release.asc' | apt-key add - && \
