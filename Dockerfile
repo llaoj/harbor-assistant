@@ -15,7 +15,8 @@ RUN apt-get update && \
     wget \
     ca-certificates \
     gnupg2 \
-    procps
+    procps \
+    runit
 
 RUN wget -q -O- 'https://download.ceph.com/keys/release.asc' | apt-key add - && \
     VERSION_CODENAME=$(cat /etc/os-release | grep VERSION_CODENAME | awk -F= '{print $2}') && \
@@ -24,12 +25,13 @@ RUN wget -q -O- 'https://download.ceph.com/keys/release.asc' | apt-key add - && 
     # apt-get install -y  --no-install-recommends  && \
     apt-cache search ceph-common
 
-RUN wget -P /tmp https://ftp.debian.org/debian/pool/main/r/runit/runit_${RUNIT_VER}.orig.tar.gz && \
-    tar -zxpf /tmp/runit_${RUNIT_VER}.orig.tar.gz -C /tmp && \
-    cd /tmp/admin/runit-${RUNIT_VER}/ && \
-    package/install && \
-    ls -la /tmp/admin/runit-${RUNIT_VER}/command && \
-    cp /tmp/admin/runit-${RUNIT_VER}/command/* /usr/local/bin/ && \
-    rm -rf /tmp/*
+# RUN wget -P /tmp https://ftp.debian.org/debian/pool/main/r/runit/runit_${RUNIT_VER}.orig.tar.gz && \
+#     tar -zxpf /tmp/runit_${RUNIT_VER}.orig.tar.gz -C /tmp && \
+#     cd /tmp/admin/runit-${RUNIT_VER}/ && \
+#     package/install && \
+#     ls -la /tmp/admin/runit-${RUNIT_VER}/command && \
+#     cp /tmp/admin/runit-${RUNIT_VER}/command/* /usr/local/bin/ && \
+#     rm -rf /tmp/*
+RUN ls /usr/local/bin
 
 CMD ["start_runit"]
