@@ -16,7 +16,8 @@ RUN apt-get update && \
     ca-certificates \
     gnupg2 \
     procps \
-    runit
+    runit && \
+    ls -la /usr/local/bin/
 
 RUN wget -q -O- 'https://download.ceph.com/keys/release.asc' | apt-key add - && \
     VERSION_CODENAME=$(cat /etc/os-release | grep VERSION_CODENAME | awk -F= '{print $2}') && \
