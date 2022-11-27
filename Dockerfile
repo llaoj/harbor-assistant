@@ -13,7 +13,7 @@ RUN apt-get update && \
     apt-cache search ceph-common
 
 RUN wget -P /tmp https://ftp.debian.org/debian/pool/main/r/runit/runit_${RUNIT_VER}.orig.tar.gz && \
-    gunzip /tmp/runit_${RUNIT_VER}.orig.tar.gz && \
+    # gunzip /tmp/runit_${RUNIT_VER}.orig.tar.gz && \
     tar -zxpf /tmp/runit_${RUNIT_VER}.orig.tar -C /tmp && \
     cd /tmp/admin/runit-${RUNIT_VER}/ && \
     package/install && \
