@@ -3,12 +3,15 @@
 FROM ubuntu:22.04
 
 ARG RUNIT_VER=2.1.2
+ARG CEPH_VERSION=nautilus
+
 # RUN echo "deb http://download.ceph.com/debian-$CEPH_VERSION/ xenial main" | tee /etc/apt/sources.list.d/ceph-$CEPH_VERSION.list && \
 #     && apt-get update && apt-get install -y  --no-install-recommends --force-yes ceph-common \
 #     && dpkg -s $PACKAGES \
 #     && apt-get clean && \
 #     rm -rf /var/lib/apt/lists/*
-RUN apt-get update && \
+RUN echo "deb http://download.ceph.com/debian-$CEPH_VERSION/ $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/ceph-$CEPH_VERSION.list && \
+    apt-get update && \
     apt-get install -y  --no-install-recommends wget ca-certificates && \
     apt-cache search ceph-common
 
