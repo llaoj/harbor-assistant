@@ -1,8 +1,8 @@
-ARG RUNIT_VER=2.1.2
 # ARG CEPH_VERSION luminous
 
 FROM ubuntu:22.04
 
+ARG RUNIT_VER=2.1.2
 # RUN echo "deb http://download.ceph.com/debian-$CEPH_VERSION/ xenial main" | tee /etc/apt/sources.list.d/ceph-$CEPH_VERSION.list && \
 #     && apt-get update && apt-get install -y  --no-install-recommends --force-yes ceph-common \
 #     && dpkg -s $PACKAGES \
