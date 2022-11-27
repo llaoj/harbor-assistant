@@ -1,13 +1,9 @@
-name: deploy to aliyun
+name: Build Container Image
 
 on:
   push:
     tags:
     - 'v[0-9].[0-9]+.[0-9]+**'
-
-env:
-  IMAGE_REPO: rutron/b1home
-  WORK_DIR_PREFIX: /data/src
 
 jobs:
   deploy:
@@ -18,12 +14,10 @@ jobs:
         run: |
           APP_NAME=${GITHUB_REPOSITORY//\//_}
           GIT_TAG=${GITHUB_REF#refs/tags/}
-          echo "app_name=${APP_NAME}" >> $GITHUB_ENV
-          echo "git_tag=${GIT_TAG}" >> $GITHUB_ENV
-          echo "image=${{ secrets.REGISTRY }}/${IMAGE_REPO}:${GIT_TAG}" >> $GITHUB_ENV
-          echo "work_dir=${WORK_DIR_PREFIX}/${APP_NAME}" >> $GITHUB_ENV
+          echo "image=${{ secrets.REGISTRY }}/${APP_NAME}:${GIT_TAG}" >> $GITHUB_ENV
+
       - name: Build and push image to ACR
         run: |
-          docker build --build-arg WORK_DIR=${{ env.work_dir }} --build-arg APP_VERSION=${{ env.git_tag }} -f deploy/Dockerfile -t ${{ env.image }} .
+          docker build -t ${{ env.image }} .
           docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }} ${{ secrets.REGISTRY }}
           docker push ${{ env.image }}

@@ -1,9 +1,8 @@
 ARG RUNIT_VER=2.1.2
 # ARG CEPH_VERSION luminous
 
-FROM ubuntu:22.04 as ubuntu
+FROM ubuntu:22.04
 
-# install runit
 RUN wget -P /tmp https://ftp.debian.org/debian/pool/main/r/runit/runit_${RUNIT_VER}.orig.tar.gz && \
     gunzip /tmp/runit_${RUNIT_VER}.orig.tar.gz && \
     tar -zxpf /tmp/runit_${RUNIT_VER}.orig.tar -C /tmp && \
