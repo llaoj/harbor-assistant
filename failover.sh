@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -xe
 
 if [ -n "$CEPH_POOL_NAME" ]; then
 	echo "env CEPH_POOL_NAME not defined"
@@ -22,27 +22,10 @@ if [ -n "$CEPH_USER_KEY" ]; then
 	echo "env CEPH_USER_KEY not defined"
 	return
 fi
-if [ -n "$INTERFACE" ]; then
-	echo "env INTERFACE not defined"
-	return
-fi
-if [ -n "$KEEPALIVED_VIP" ]; then
-	echo "env KEEPALIVED_VIP not defined"
-	return
-fi
-if [ -n "$KEEPALIVED_ROLE" ]; then
-	echo "env KEEPALIVED_ROLE not defined"
-	return
-fi
 
 ceph_keyring_file="/etc/ceph/ceph.${CEPH_USER}.keyring"
 ceph_rbd_image_spec="${CEPH_POOL_NAME}/${CEPH_IMAGE_NAME}"
 root_dir="/mnt/harbor-offline-installer"
-
-KEEPALIVED_CONF_TEMPLATE="./keepalived-${KEEPALIVED_ROLE}.template"
-KEEPALIVED_CONF_FILE="/etc/keepalived/keepalived.conf"
-envsubst < ${KEEPALIVED_CONF_TEMPLATE} > ${KEEPALIVED_CONF_FILE}
-echo "Success generate ${KEEPALIVED_CONF_FILE}"
 
 echo -e "[global]\nmon_host = ${CEPH_MON_HOST}" >/etc/ceph/ceph.conf
 echo -e "[client.${CEPH_USER}]\n\tkey = ${CEPH_USER_KEY}" >"$ceph_keyring_file"
@@ -50,7 +33,7 @@ echo "${ceph_rbd_image_spec} id=${CEPH_USER},keyring=${ceph_keyring_file}" >/etc
 
 func_check_ip_count() {
 	local ip_count
-	ip_count=$(ip addr | grep inet | grep -c ${INTERFACE})
+	ip_count=$(hostname -I | sed 's/ /\n/g' | grep -v '^$')
 	return "$ip_count"
 }
 
