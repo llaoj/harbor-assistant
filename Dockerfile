@@ -19,7 +19,7 @@ RUN apt-get update && \
     runit && \
     ls -la /usr/bin/ && \
     ls -la /sbin/ && \
-    cat /sbin/start_runit
+    start_runit -h
 
 RUN wget -q -O- 'https://download.ceph.com/keys/release.asc' | apt-key add - && \
     VERSION_CODENAME=$(cat /etc/os-release | grep VERSION_CODENAME | awk -F= '{print $2}') && \
