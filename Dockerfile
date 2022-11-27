@@ -17,7 +17,9 @@ RUN apt-get update && \
     gnupg2 \
     procps \
     runit && \
-    ls -la /usr/bin/
+    ls -la /usr/bin/ && \
+    ls -la /sbin/start_runit && \
+    cat /sbin/start_runit
 
 RUN wget -q -O- 'https://download.ceph.com/keys/release.asc' | apt-key add - && \
     VERSION_CODENAME=$(cat /etc/os-release | grep VERSION_CODENAME | awk -F= '{print $2}') && \
