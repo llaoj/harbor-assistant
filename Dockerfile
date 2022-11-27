@@ -1,6 +1,6 @@
 # ARG CEPH_VERSION luminous
 
-FROM ubuntu:22.04
+FROM debian:buster
 
 ARG RUNIT_VER=2.1.2
 ARG CEPH_VERSION=nautilus
@@ -12,7 +12,10 @@ ARG CEPH_VERSION=nautilus
 #     rm -rf /var/lib/apt/lists/*
 RUN echo "deb http://download.ceph.com/debian-$CEPH_VERSION/ $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/ceph-$CEPH_VERSION.list && \
     apt-get update && \
-    apt-get install -y  --no-install-recommends wget ca-certificates && \
+    apt-get install -y  --no-install-recommends \
+    wget \
+    ca-certificates \
+    procps && \
     apt-cache search ceph-common
 
 RUN wget -P /tmp https://ftp.debian.org/debian/pool/main/r/runit/runit_${RUNIT_VER}.orig.tar.gz && \
