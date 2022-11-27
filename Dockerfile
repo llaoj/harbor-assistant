@@ -25,8 +25,7 @@ RUN wget -q -O- 'https://download.ceph.com/keys/release.asc' | apt-key add - && 
     apt-cache search ceph-common
 
 RUN wget -P /tmp https://ftp.debian.org/debian/pool/main/r/runit/runit_${RUNIT_VER}.orig.tar.gz && \
-    # gunzip /tmp/runit_${RUNIT_VER}.orig.tar.gz && \
-    tar -zxpf /tmp/runit_${RUNIT_VER}.orig.tar -C /tmp && \
+    tar -zxpf /tmp/runit_${RUNIT_VER}.orig.tar.gz -C /tmp && \
     cd /tmp/admin/runit-${RUNIT_VER}/ && \
     package/install && \
     ls -la /tmp/admin/runit-${RUNIT_VER}/command && \
