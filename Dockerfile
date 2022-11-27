@@ -14,6 +14,7 @@ RUN apt-get update && \
     apt-get install -y  --no-install-recommends \
     wget \
     ca-certificates \
+    gnupg2 \
     procps
 
 RUN wget -q -O- 'https://download.ceph.com/keys/release.asc' | apt-key add - && \
