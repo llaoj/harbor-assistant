@@ -1,31 +1,31 @@
 #!/bin/sh
 
 if [ -z "$CEPH_POOL_NAME" ]; then
-    echo "env CEPH_POOL_NAME is undefined"
+    echo "CEPH_POOL_NAME is undefined"
     exit 1
 fi
 if [ -z "$CEPH_IMAGE_NAME" ]; then
-    echo "env CEPH_IMAGE_NAME is undefined"
+    echo "CEPH_IMAGE_NAME is undefined"
     exit 1
 fi
 if [ -z "$CEPH_MON_HOST" ]; then
-    echo "env CEPH_MON_HOST is undefined"
+    echo "CEPH_MON_HOST is undefined"
     exit 1
 fi
 if [ -z "$CEPH_USER" ]; then
-    echo "env CEPH_USER is undefined"
+    echo "CEPH_USER is undefined"
     exit 1
 fi
 if [ -z "$CEPH_USER_KEY" ]; then
-    echo "env CEPH_USER_KEY is undefined"
+    echo "CEPH_USER_KEY is undefined"
     exit 1
 fi
-if [ -n "$KEEPALIVED_VIP" ]; then
-    echo "env KEEPALIVED_VIP not defined"
+if [ -z "$KEEPALIVED_VIP" ]; then
+    echo "KEEPALIVED_VIP is undefined"
     exit 1
 fi
-if [ -n "$KEEPALIVED_ROLE" ]; then
-    echo "env KEEPALIVED_ROLE not defined"
+if [ -z "$KEEPALIVED_ROLE" ]; then
+    echo "KEEPALIVED_ROLE is undefined"
     exit 1
 fi
 
