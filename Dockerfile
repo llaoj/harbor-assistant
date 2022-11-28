@@ -7,7 +7,8 @@ RUN apt-get update && \
     wget \
     ca-certificates \
     gnupg2 \
-    runit   
+    runit \
+    gettext-base
 
 RUN wget -q -O- 'https://download.ceph.com/keys/release.asc' | apt-key add - && \
     OS_CODENAME=$(cat /etc/os-release | grep VERSION_CODENAME | awk -F= '{print $2}') && \

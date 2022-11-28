@@ -4,23 +4,23 @@ set -xe
 
 if [ -n "$CEPH_POOL_NAME" ]; then
 	echo "env CEPH_POOL_NAME not defined"
-	return
+	exit 1
 fi
 if [ -n "$CEPH_IMAGE_NAME" ]; then
 	echo "env CEPH_IMAGE_NAME not defined"
-	return
+	exit 1
 fi
 if [ -n "$CEPH_MON_HOST" ]; then
 	echo "env CEPH_MON_HOST not defined"
-	return
+	exit 1
 fi
 if [ -n "$CEPH_USER" ]; then
 	echo "env CEPH_USER not defined"
-	return
+	exit 1
 fi
 if [ -n "$CEPH_USER_KEY" ]; then
 	echo "env CEPH_USER_KEY not defined"
-	return
+	exit 1
 fi
 
 ceph_keyring_file="/etc/ceph/ceph.${CEPH_USER}.keyring"
