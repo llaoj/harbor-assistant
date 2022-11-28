@@ -21,6 +21,6 @@ RUN wget -q -O- 'https://download.ceph.com/keys/release.asc' | apt-key add - && 
     rm -rf /var/lib/apt/lists/*
 
 COPY /etc/. /etc/
-COPY harbor_failover /usr/bin/
+COPY harbor_failover start_runit /usr/bin/
 
-CMD ["runsvdir" , "-P", "/etc/service/"]
+CMD ["start_runit"]
