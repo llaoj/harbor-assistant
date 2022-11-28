@@ -5,7 +5,7 @@ global_defs {
     enable_script_security
 }
 vrrp_script harbor_healthz {
-  script "/etc/keepalived/harbor-healthz.sh ${KEEPALIVED_VIP}"
+  script "/etc/keepalived/harbor_healthz ${KEEPALIVED_VIP}"
   interval 5
   weight -2
   fall 12
