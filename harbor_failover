@@ -2,7 +2,7 @@
 
 set -xe
 
-ceph_keyring_file="/etc/ceph/ceph.${CEPH_USER}.keyring"
+ceph_keyring_file="/etc/ceph/ceph.client.${CEPH_USER}.keyring"
 ceph_rbd_image_spec="${CEPH_POOL_NAME}/${CEPH_IMAGE_NAME}"
 root_dir="/mnt/harbor-offline-installer"
 
@@ -13,7 +13,7 @@ echo "${ceph_rbd_image_spec} id=${CEPH_USER},keyring=${ceph_keyring_file}" >/etc
 func_check_ip_count() {
 	local ip_count
 	ip_count=$(hostname -I | sed 's/ /\n/g' | grep -cv '^$')
-	return "$ip_count"
+	echo "$ip_count"
 }
 
 func_check_harbor() {

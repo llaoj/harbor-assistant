@@ -22,5 +22,6 @@ RUN wget -q -O- 'https://download.ceph.com/keys/release.asc' | apt-key add - && 
 
 COPY /etc/. /etc/
 COPY harbor_failover start_runit /usr/bin/
+RUN chmod +x /usr/bin/start_runit /usr/bin/harbor_failover
 
 CMD ["start_runit"]
