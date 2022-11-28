@@ -20,4 +20,7 @@ RUN wget -q -O- 'https://download.ceph.com/keys/release.asc' | apt-key add - && 
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+COPY /etc/. /etc/
+COPY harbor_failover /usr/bin/
+
 CMD ["runsvdir" , "-P", "/etc/service/"]
