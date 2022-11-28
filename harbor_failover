@@ -2,24 +2,24 @@
 
 set -xe
 
-if [ -n "$CEPH_POOL_NAME" ]; then
-	echo "env CEPH_POOL_NAME not defined"
+if [ -z "$CEPH_POOL_NAME" ]; then
+	echo "env CEPH_POOL_NAME is undefined"
 	exit 1
 fi
-if [ -n "$CEPH_IMAGE_NAME" ]; then
-	echo "env CEPH_IMAGE_NAME not defined"
+if [ -z "$CEPH_IMAGE_NAME" ]; then
+	echo "env CEPH_IMAGE_NAME is undefined"
 	exit 1
 fi
-if [ -n "$CEPH_MON_HOST" ]; then
-	echo "env CEPH_MON_HOST not defined"
+if [ -z "$CEPH_MON_HOST" ]; then
+	echo "env CEPH_MON_HOST is undefined"
 	exit 1
 fi
-if [ -n "$CEPH_USER" ]; then
-	echo "env CEPH_USER not defined"
+if [ -z "$CEPH_USER" ]; then
+	echo "env CEPH_USER is undefined"
 	exit 1
 fi
-if [ -n "$CEPH_USER_KEY" ]; then
-	echo "env CEPH_USER_KEY not defined"
+if [ -z "$CEPH_USER_KEY" ]; then
+	echo "env CEPH_USER_KEY is undefined"
 	exit 1
 fi
 
