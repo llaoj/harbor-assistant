@@ -1,4 +1,4 @@
-FROM debian:buster
+FROM ubuntu:18.04
 
 ARG CEPH_VERSION=nautilus
 
@@ -21,7 +21,7 @@ RUN wget -q -O- 'https://download.ceph.com/keys/release.asc' | apt-key add - && 
     apt-get update && \
     apt-cache madison ceph-common && \
     apt-get install -y  --no-install-recommends \
-    ceph-common=14 && \
+    ceph-common=14.2.19 && \
     # ceph-common amd64 12.2.11+dfsg1-2.1+b1
     ceph -v && \
     apt-get clean && \
