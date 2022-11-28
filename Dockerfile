@@ -22,7 +22,7 @@ RUN wget -q -O- 'https://download.ceph.com/keys/release.asc' | apt-key add - && 
     echo "deb http://download.ceph.com/debian-$CEPH_VERSION/ $OS_CODENAME main" | tee /etc/apt/sources.list.d/ceph-$CEPH_VERSION.list && \
     ls -la /etc/apt/sources.list.d && \
     apt-get update && \
-    apt-get install -y  --no-install-recommends  && \
+    apt-get install -y  --no-install-recommends \
     ceph-common && \
     ceph -v && \
     apt-get clean && \
