@@ -20,8 +20,13 @@ RUN wget -q -O- 'https://download.ceph.com/keys/release.asc' | apt-key add - && 
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+RUN wget -q -O /usr/bin/docker-compose https://github.com/docker/compose/releases/download/v2.13.0/docker-compose-linux-x86_64 && \
+    chmod +x /usr/bin/docker-compose
+
 COPY /etc/. /etc/
 COPY harbor_failover start_runit /usr/bin/
-RUN chmod +x /usr/bin/start_runit /usr/bin/harbor_failover
+
+RUN chmod +x /usr/bin/start_runit /usr/bin/harbor_failover && \
+    chmod -R +x /etc/service/
 
 CMD ["start_runit"]

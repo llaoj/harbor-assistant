@@ -32,21 +32,22 @@ Using runit to manage these components:
 Run this contianer<`registry.cn-beijing.aliyuncs.com/llaoj/harbor-failover-with-rbd`> beside Harbor, you need add some options:
 
 ```sh
+docker pull registry.cn-beijing.aliyuncs.com/llaoj/harbor-failover-with-rbd && \
 docker run \
-  -d \
-  --name harbor-failover
+  --name harbor-failover \
   --cap-add=NET_ADMIN \
   --cap-add=NET_BROADCAST \
   --cap-add=NET_RAW \
   --net=host \
-  -e CEPH_POOL_NAME= \
-  -e CEPH_IMAGE_NAME= \
-  -e CEPH_MON_HOST= \
-  -e CEPH_USER= \
-  -e CEPH_USER_KEY= \
-  -e KEEPALIVED_VIP= \
-  -e KEEPALIVED_ROLE=master \
-  -e INTERFACE= \
+  -e CEPH_MON_HOST='<host1,host2,host3>' \
+  -e CEPH_USER='<ceph-user>' \
+  -e CEPH_USER_KEY='<ceph-user-key>' \
+  -e CEPH_POOL_NAME='<ceph-pool-name>' \
+  -e CEPH_IMAGE_NAME='<ceph-image-name>' \
+  -e KEEPALIVED_VIP='<keepalived-vip>' \
+  -e KEEPALIVED_ROLE='<keepalived-role>' \
+  -e INTERFACE='<interface>' \
+  -v /var/run/docker.sock:/var/run/docker.sock \
   registry.cn-beijing.aliyuncs.com/llaoj/harbor-failover-with-rbd
 ```
 
@@ -54,12 +55,22 @@ docker run \
 
 | ENV             | Required | Note                  |
 | --------------- | -------- | --------------------- |
-| CEPH_POOL_NAME  | Y        |                       |
-| CEPH_IMAGE_NAME | Y        |                       |
-| CEPH_MON_HOST   | Y        |                       |
+| CEPH_MON_HOST   | Y        | comma separated       |
 | CEPH_USER       | Y        |                       |
 | CEPH_USER_KEY   | Y        |                       |
+| CEPH_POOL_NAME  | Y        |                       |
+| CEPH_IMAGE_NAME | Y        |                       |
 | KEEPALIVED_VIP  | Y        |                       |
 | KEEPALIVED_ROLE | Y        | `master` or `backup`  |
 | INTERFACE       | Y        | network dev interface |
 
+
+## Example
+
+1. create rbd image
+
+```
+rbd create -p kubernetes harbor_data --size 2G
+```
+
+2. 

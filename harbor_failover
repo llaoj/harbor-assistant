@@ -17,9 +17,7 @@ func_check_ip_count() {
 }
 
 func_check_harbor() {
-	local harbor_containers_count
-	harbor_containers_count=$(ps -ef | grep -c harbor)
-	if [ "$harbor_containers_count" -gt 0 ]; then
+	if [ "$(pgrep -cf harbor)" -gt 0 ]; then
 		echo "harbor is running..."
 		return 0
 	else
