@@ -16,8 +16,11 @@ if [ ! -f "$ceph_conf_file" ]; then
 fi
 
 # load rbd kernel module
-if ! lsmod | grep 'rbd' &>/dev/null; then
-	modprobe rbd >/dev/null 2>&1
+if [ -d "/sys/module/rbd" ]; then
+	if ! modprobe rbd >/dev/null 2>&1; then
+		echo "Error: load rbd module failed!"
+		exit $?
+	fi
 fi
 
 func_status() {
@@ -42,7 +45,7 @@ func_start() {
 	fi
 
 	cd $root_dir || return
-	if [ "$(func_check_harbor)" ]; then
+	if [ "$(func_status)" ]; then
 		docker-compose down -v
 	fi
 	docker-compose up -d
@@ -54,7 +57,7 @@ func_start() {
 
 func_stop() {
 	cd $root_dir || return
-	if [ "$(func_check_harbor)" ]; then
+	if [ "$(func_status)" ]; then
 		docker-compose down -v
 	fi
 
