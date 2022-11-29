@@ -8,7 +8,8 @@ RUN apt-get update && \
     ca-certificates \
     gnupg2 \
     runit \
-    gettext-base
+    gettext-base \
+    kmod
 
 RUN wget -q -O- 'https://download.ceph.com/keys/release.asc' | apt-key add - && \
     OS_CODENAME=$(cat /etc/os-release | grep VERSION_CODENAME | awk -F= '{print $2}') && \
@@ -24,9 +25,10 @@ RUN wget -q -O /usr/bin/docker-compose https://github.com/docker/compose/release
     chmod +x /usr/bin/docker-compose
 
 COPY /etc/. /etc/
-COPY harbor_failover start_runit /usr/bin/
+COPY harborctl /usr/bin/
+COPY bootstrap.sh /
 
-RUN chmod +x /usr/bin/start_runit /usr/bin/harbor_failover && \
+RUN chmod +x /usr/bin/harborctl /bootstrap.sh && \
     chmod -R +x /etc/service/
 
-CMD ["start_runit"]
+CMD ["/bootstrap.sh"]

@@ -1,11 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 
-if [ -z "$CEPH_POOL_NAME" ]; then
-    echo "CEPH_POOL_NAME is undefined"
-    exit 1
-fi
-if [ -z "$CEPH_IMAGE_NAME" ]; then
-    echo "CEPH_IMAGE_NAME is undefined"
+# CEPH_POOL_NAME/CEPH_IMAGE_NAME
+if [ -z "$CEPH_IMAGE_SPEC" ]; then
+    echo "CEPH_IMAGE_SPEC is undefined"
     exit 1
 fi
 if [ -z "$CEPH_MON_HOST" ]; then

@@ -1,6 +1,7 @@
 ## Versions
 
 - Kernel>=4.5
+- Kernel rbd module suport
 - Ceph-common version >= ceph version
 - Ceph code name: `nautilus`
 
@@ -29,27 +30,7 @@ Using runit to manage these components:
 
 ## How to run
 
-Run this contianer<`registry.cn-beijing.aliyuncs.com/llaoj/harbor-failover-with-rbd`> beside Harbor, you need add some options:
-
-```sh
-docker pull registry.cn-beijing.aliyuncs.com/llaoj/harbor-failover-with-rbd && \
-docker run \
-  --name harbor-failover \
-  --cap-add=NET_ADMIN \
-  --cap-add=NET_BROADCAST \
-  --cap-add=NET_RAW \
-  --net=host \
-  -e CEPH_MON_HOST='<host1,host2,host3>' \
-  -e CEPH_USER='<ceph-user>' \
-  -e CEPH_USER_KEY='<ceph-user-key>' \
-  -e CEPH_POOL_NAME='<ceph-pool-name>' \
-  -e CEPH_IMAGE_NAME='<ceph-image-name>' \
-  -e KEEPALIVED_VIP='<keepalived-vip>' \
-  -e KEEPALIVED_ROLE='<keepalived-role>' \
-  -e INTERFACE='<interface>' \
-  -v /var/run/docker.sock:/var/run/docker.sock \
-  registry.cn-beijing.aliyuncs.com/llaoj/harbor-failover-with-rbd
-```
+Run this contianer<`registry.cn-beijing.aliyuncs.com/llaoj/harbor-assistant`> beside Harbor, you need add some options, please refer `run_assistant` shell.
 
 ## OS ENV
 
@@ -73,4 +54,39 @@ docker run \
 rbd create -p kubernetes harbor_data --size 2G
 ```
 
-2. 
+## Q&A
+
+1. Failed to add secret to kernel
+
+```shell
+$ rbd device map kubernetes/harbor_data --id=admin --keyring=/etc/ceph/ceph.client.admin.keyring 
+rbd: failed to add secret 'client.admin' to kernel
+In some cases useful info is found in syslog - try "dmesg | tail".
+rbd: map failed: (1) Operation not permitted
+```
+
+Docker prevent containers from using the kernel keyring, which is not namespaced. Run with `--security-opt seccomp=unconfined` option without the default seccomp profile.
+
+2. Failed to load rbd kernel module
+
+```shell
+$ rbd device map kubernetes/harbor_data --id=admin --keyring=/etc/ceph/ceph.client.admin.keyring
+sh: 1: /sbin/modinfo: not found
+sh: 1: /sbin/modprobe: not found
+rbd: failed to load rbd kernel module (127)
+rbd: sysfs write failed
+In some cases useful info is found in syslog - try "dmesg | tail".
+rbd: map failed: (2) No such file or directory
+```
+
+Run `modprobe rbd` on the host to install rbd module
+
+3. Read-only file system
+
+```shell
+$ rbd device map kubernetes/harbor_data --id=admin --keyring=/etc/ceph/ceph.client.admin.keyring
+rbd: sysfs write failed
+In some cases useful info is found in syslog - try "dmesg | tail".
+rbd: map failed: (30) Read-only file system
+```
+

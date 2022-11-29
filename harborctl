@@ -1,0 +1,80 @@
+#!/bin/bash
+
+set -xe
+
+root_dir="/mnt/harbor-offline-installer"
+
+# ceph config
+# echo "${CEPH_IMAGE_SPEC} id=${CEPH_USER},keyring=${ceph_keyring_file}" >/etc/ceph/rbdmap
+ceph_keyring_file="/etc/ceph/ceph.client.${CEPH_USER}.keyring"
+ceph_conf_file="/etc/ceph/ceph.conf"
+if [ ! -f "$ceph_keyring_file" ]; then
+	echo -e "[client.${CEPH_USER}]\n\tkey=${CEPH_USER_KEY}" >"$ceph_keyring_file"
+fi
+if [ ! -f "$ceph_conf_file" ]; then
+	echo -e "[global]\nmon_host=${CEPH_MON_HOST}" >/etc/ceph/ceph.conf
+fi
+
+# load rbd kernel module
+if ! lsmod | grep 'rbd' &>/dev/null; then
+	modprobe rbd >/dev/null 2>&1
+fi
+
+func_status() {
+	if [ "$(pgrep -cf harbor)" -gt 0 ]; then
+		echo "harbor is running..."
+		return 0
+	else
+		echo "harbor is not running!"
+		return 1
+	fi
+}
+
+func_start() {
+	if [ ! -d "$root_dir" ]; then
+		local client_id
+		# rbd device map "${ceph_rbd_image_spec}" --id="${CEPH_USER}" --keyring="${ceph_keyring_file}"
+		if ! rbdmap map; then
+			# watcher=192.168.55.2:0/2900899764 client.14844 cookie=139644428642944
+			client_id=$(rbd status "${CEPH_IMAGE_SPEC}" | grep "watcher=" | awk -F "watcher=" '{print $2}' | awk '{print $1}')
+			ceph osd blacklist add "$client_id"
+		fi
+	fi
+
+	cd $root_dir || return
+	if [ "$(func_check_harbor)" ]; then
+		docker-compose down -v
+	fi
+	docker-compose up -d
+
+	if [ -n "$client_id" ]; then
+		ceph osd blacklist rm "$client_id"
+	fi
+}
+
+func_stop() {
+	cd $root_dir || return
+	if [ "$(func_check_harbor)" ]; then
+		docker-compose down -v
+	fi
+
+	rbdmap unmap
+}
+
+case "$1" in
+	status)
+		func_status
+		;;
+
+	start)
+		func_start
+		;;
+
+	stop)
+		func_stop
+		;;
+
+	*)
+		echo "Usage: harborctl status | start | stop"
+		;;
+esac
