@@ -25,10 +25,10 @@ RUN wget -q -O /usr/bin/docker-compose https://github.com/docker/compose/release
     chmod +x /usr/bin/docker-compose
 
 COPY /etc/. /etc/
-COPY harborctl /usr/bin/
+COPY rbdmap harborctl /usr/bin/
 COPY bootstrap.sh /
 
-RUN chmod +x /usr/bin/harborctl /bootstrap.sh && \
+RUN chmod +x /usr/bin/rbdmap /usr/bin/harborctl /bootstrap.sh && \
     chmod -R +x /etc/service/
 
 CMD ["/bootstrap.sh"]

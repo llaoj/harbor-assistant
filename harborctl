@@ -5,14 +5,17 @@ set -xe
 root_dir="/mnt/harbor-offline-installer"
 
 # ceph config
-# echo "${CEPH_IMAGE_SPEC} id=${CEPH_USER},keyring=${ceph_keyring_file}" >/etc/ceph/rbdmap
 ceph_keyring_file="/etc/ceph/ceph.client.${CEPH_USER}.keyring"
 ceph_conf_file="/etc/ceph/ceph.conf"
+ceph_rbdmap_file="/etc/ceph/rbdmap"
 if [ ! -f "$ceph_keyring_file" ]; then
 	echo -e "[client.${CEPH_USER}]\n\tkey=${CEPH_USER_KEY}" >"$ceph_keyring_file"
 fi
 if [ ! -f "$ceph_conf_file" ]; then
 	echo -e "[global]\nmon_host=${CEPH_MON_HOST}" >/etc/ceph/ceph.conf
+fi
+if [ ! -f "$ceph_rbdmap_file" ]; then
+	echo "${CEPH_IMAGE_SPEC} id=${CEPH_USER},keyring=${ceph_keyring_file}" >$ceph_rbdmap_file
 fi
 
 # load rbd kernel module
@@ -35,10 +38,9 @@ func_status() {
 
 func_start() {
 	if [ ! -d "$root_dir" ]; then
-		local client_id
-		# rbd device map "${ceph_rbd_image_spec}" --id="${CEPH_USER}" --keyring="${ceph_keyring_file}"
 		if ! rbdmap map; then
 			# watcher=192.168.55.2:0/2900899764 client.14844 cookie=139644428642944
+			local client_id
 			client_id=$(rbd status "${CEPH_IMAGE_SPEC}" | grep "watcher=" | awk -F "watcher=" '{print $2}' | awk '{print $1}')
 			ceph osd blacklist add "$client_id"
 		fi
