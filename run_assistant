@@ -37,8 +37,13 @@ if [ -z "$KEEPALIVED_ROLE" ]; then
     exit 1
 fi
 
-if ! keepalivedctl status; then
-    keepalivedctl start
+script_dir=$(
+    cd "$(dirname "${BASH_SOURCE[0]}")"
+    pwd
+)
+
+if ! "$script_dir"/keepalivedctl status; then
+    "$script_dir"/keepalivedctl start
 fi
 
 func_has_vip() {
@@ -60,12 +65,12 @@ while true; do
     if [ "$has_vip" == "Y" ] && [ "$(func_has_vip)" == "N" ]; then
         echo "vip gone"
         has_vip="N"
-        harborctl stop
+        "$script_dir"/harborctl stop
     fi
     if [ "$has_vip" == "N" ] && [ "$(func_has_vip)" == "Y" ]; then
         echo "vip coming"
         has_vip="Y"
-        harborctl start
+        "$script_dir"/harborctl start
     fi
     sleep 1
 done
