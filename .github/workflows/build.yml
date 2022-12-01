@@ -20,12 +20,14 @@ jobs:
       - name: Install ossutil
         run: |
           env
-          wget -q -O $HOME/ossutil64 https://gosspublic.alicdn.com/ossutil/1.7.14/ossutil64
-          chmod 755 $HOME/ossutil64
-          ls -la $HOME/
+          cd ..
+          wget -q https://gosspublic.alicdn.com/ossutil/1.7.14/ossutil64
+          chmod 755 ossutil64
 
       - name: Upload to OSS
         run: |
-          zip  -r ${{ env.release_file }}  ./ -x ".github/" ".git/"
-          ls -la ../
+          pwd
+          cd ..
+          zip  -r ${{ env.release_file }}  ./${{ env.project_name }} -x ".github/*" ".git/*"
+          ls -la
           $HOME/ossutil64 cp ${{ env.release_file }} oss://llaoj/${{ env.project_name }}/ --update --meta x-oss-object-acl:public-read --meta x-oss-object-acl:public-read -e {{ secrets.OSS_ENDPOINT }} -i {{ secrets.OSS_ACCESS_KEY_ID }} -k {{ secrets.OSS_SECRET_ACCESS_KEY }}
