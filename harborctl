@@ -100,17 +100,19 @@ func_start() {
 	func_device_map
 	if [ -d "$harbor_dir" ]; then
 		func_harbor_install
+	else
+		cd "$harbor_dir" || return
+		if func_status; then
+			docker-compose down -v
+		fi
+		docker-compose up -d
 	fi
-	cd "$harbor_dir" || return
-	if [ "$(func_status)" ]; then
-		docker-compose down -v
-	fi
-	docker-compose up -d
+
 }
 
 func_stop() {
 	cd "$harbor_dir" || return
-	if [ "$(func_status)" ]; then
+	if func_status; then
 		docker-compose down -v
 	fi
 	func_device_unmap
