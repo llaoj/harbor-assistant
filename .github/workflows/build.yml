@@ -1,4 +1,4 @@
-name: Build container image
+name: Upload to OSS
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
     - 'v[0-9].[0-9]+.[0-9]+**'
 
 jobs:
-  build:
+  upload:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -19,15 +19,11 @@ jobs:
 
       - name: Install ossutil
         run: |
-          env
-          cd ..
           wget -q https://gosspublic.alicdn.com/ossutil/1.7.14/ossutil64
           chmod 755 ossutil64
 
       - name: Upload to OSS
         run: |
-          pwd
           cd ..
-          zip  -r ${{ env.release_file }}  ./${{ env.project_name }} -x "${{ env.project_name }}/.github/" "${{ env.project_name }}/.git/"
-          ls -la
+          zip  -r ${{ env.release_file }} ./${{ env.project_name }} -x "${{ env.project_name }}/.github/*" "${{ env.project_name }}/.git/*"
           ./ossutil64 cp ${{ env.release_file }} oss://llaoj/${{ env.project_name }}/ --update --meta x-oss-object-acl:public-read -e ${{ secrets.OSS_ENDPOINT }} -i ${{ secrets.OSS_ACCESS_KEY_ID }} -k ${{ secrets.OSS_SECRET_ACCESS_KEY }}
