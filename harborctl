@@ -4,7 +4,11 @@ set -xe
 
 ceph_image_spec="${CEPH_POOL_NAME}/${CEPH_IMAGE_NAME}"
 root_dir="/mnt/${ceph_image_spec}"
-harbor_installer_dir="$root_dir/harbor_installer"
+harbor_dir="$root_dir/harbor"
+script_dir=$(
+	cd "$(dirname "${BASH_SOURCE[0]}")"
+	pwd
+)
 
 # ceph config
 ceph_keyring_file="/etc/ceph/ceph.client.${CEPH_USER}.keyring"
@@ -73,6 +77,15 @@ func_device_map() {
 	fi
 }
 
+func_harbor_install() {
+	wget https://llaoj.oss-cn-beijing.aliyuncs.com/harbor-assistant/harbor-offline-installer-"${HARBOR_VERSION}".tgz -O - | tar xzvf - -C "$root_dir"
+	local harbor_yml_file="$script_dir"/harbor.yml
+	sed -i "s/^hostname:.*/hostname: ${HARBOR_VIP}/" "$harbor_yml_file"
+	sed -i "s/^data_volume:.*/data_volume: ${root_dir}\/data/" "$harbor_yml_file"
+	cp "$harbor_yml_file" "$harbor_dir"
+	source "$harbor_dir"/install.sh
+}
+
 func_status() {
 	if [ "$(pgrep -cf harbor)" -gt 0 ]; then
 		echo "harbor is running..."
@@ -85,7 +98,10 @@ func_status() {
 
 func_start() {
 	func_device_map
-	cd "$harbor_installer_dir" || return
+	if [ -d "$harbor_dir" ]; then
+		func_harbor_install
+	fi
+	cd "$harbor_dir" || return
 	if [ "$(func_status)" ]; then
 		docker-compose down -v
 	fi
@@ -93,8 +109,7 @@ func_start() {
 }
 
 func_stop() {
-
-	cd "$harbor_installer_dir" || return
+	cd "$harbor_dir" || return
 	if [ "$(func_status)" ]; then
 		docker-compose down -v
 	fi
