@@ -26,6 +26,6 @@ jobs:
 
       - name: Upload to OSS
         run: |
-          zip  -r ${{ env.release_file }}  ./
+          zip  -r ${{ env.release_file }}  ./ -x .github/ .git/
           ls -la
           $HOME/ossutil64 cp ${{ env.release_file }} oss://llaoj/${{ env.project_name }}/ --update --meta x-oss-object-acl:public-read --meta x-oss-object-acl:public-read -e {{ secrets.OSS_ENDPOINT }} -i {{ secrets.OSS_ACCESS_KEY_ID }} -k {{ secrets.OSS_SECRET_ACCESS_KEY }}
