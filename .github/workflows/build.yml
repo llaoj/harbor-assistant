@@ -15,14 +15,14 @@ jobs:
       - name: Variables
         run: |
           echo "project_name=${GITHUB_REPOSITORY#*/}" >> $GITHUB_ENV
-          echo "release_file=${{ env.project_name }}.zip" >> $GITHUB_ENV
+          echo "release_file=${GITHUB_REPOSITORY#*/}.zip" >> $GITHUB_ENV
 
       - name: Install ossutil
         run: |
-
-          ls -la
+          env
           wget -q -O $HOME/ossutil64 https://gosspublic.alicdn.com/ossutil/1.7.14/ossutil64
           chmod 755 $HOME/ossutil64
+          ls -la $HOME/
 
       - name: Upload to OSS
         run: |
