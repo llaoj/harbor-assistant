@@ -24,14 +24,16 @@ Disadvantage:
 
 Using runit to manage these components:
 
-- Keepalived
-- `harbor-healthz.sh` used by Keepalived
-- `failover.sh` start or cleanup Harbor instance when fault occurs
+- keepalived: check harbor and manage the vip
+- harborctl: manage harbor instance, such as start stop status
+- keepalivedctl: manage keepalived container, such as start status
 
 ## How to run
 
 ```
 wget https://llaoj.oss-cn-beijing.aliyuncs.com/harbor-assistant/harbor-assistant.tar.gz -O - | tar -xzvf - -C /opt
+cp /opt/harbor-assistant/harbor-assistant.service /usr/lib/systemd/system/
+systemctl harbor-assistant start
 ```
 
 ## OS ENV
