@@ -1,0 +1,18 @@
+# /usr/lib/systemd/system/harbor-assistant.service
+[Unit]
+Description=Harbor Assistant
+Documentation=Ensure the high availability of Harbor using Ceph RBD storage through Keepalived
+After=docker.target
+Wants=docker.target
+
+[Service]
+EnvironmentFile=/opt/harbor-assistant/.env
+ExecStart=/opt/harbor-assistant/run_assistant
+ExecReload=/bin/kill -HUP $MAINPID
+Type=simple
+KillMode=process
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

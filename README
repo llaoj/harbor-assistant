@@ -30,7 +30,9 @@ Using runit to manage these components:
 
 ## How to run
 
-Run this contianer<`registry.cn-beijing.aliyuncs.com/llaoj/harbor-assistant`> beside Harbor, you need add some options, please refer `run_assistant` shell.
+```
+wget https://llaoj.oss-cn-beijing.aliyuncs.com/harbor-assistant/harbor-assistant.tar.gz -O - | tar -xzvf -
+```
 
 ## OS ENV
 
