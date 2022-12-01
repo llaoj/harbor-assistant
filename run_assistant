@@ -4,6 +4,14 @@ set -xe
 
 exec 2>&1
 
+if [ -z "$HARBOR_VERSION" ]; then
+    echo "HARBOR_VERSION is undefined"
+    exit 1
+fi
+if [ -z "$HARBOR_VIP" ]; then
+    echo "HARBOR_VIP is undefined"
+    exit 1
+fi
 if [ -z "$CEPH_POOL_NAME" ]; then
     echo "CEPH_POOL_NAME is undefined"
     exit 1
@@ -24,10 +32,6 @@ if [ -z "$CEPH_USER_KEY" ]; then
     echo "CEPH_USER_KEY is undefined"
     exit 1
 fi
-if [ -z "$KEEPALIVED_VIP" ]; then
-    echo "KEEPALIVED_VIP is undefined"
-    exit 1
-fi
 if [ -z "$KEEPALIVED_ROLE" ]; then
     echo "KEEPALIVED_ROLE is undefined"
     exit 1
@@ -42,7 +46,7 @@ func_has_vip() {
     ip_list=$(hostname -I | sed 's/ /\n/g' | grep -v '^$')
     if [ "$ip_list" ]; then
         for ip in $ip_list; do
-            if [ "$ip" -eq "$KEEPALIVED_VIP" ]; then
+            if [ "$ip" -eq "$HARBOR_VIP" ]; then
                 echo "Y"
                 return
             fi
