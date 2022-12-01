@@ -30,4 +30,4 @@ jobs:
           cd ..
           zip  -r ${{ env.release_file }}  ./${{ env.project_name }} -x "${{ env.project_name }}/.github/" "${{ env.project_name }}/.git/"
           ls -la
-          ./ossutil64 cp ${{ env.release_file }} oss://llaoj/${{ env.project_name }}/ --update --meta x-oss-object-acl:public-read -e {{ secrets.OSS_ENDPOINT }} -i {{ secrets.OSS_ACCESS_KEY_ID }} -k {{ secrets.OSS_SECRET_ACCESS_KEY }}
+          ./ossutil64 cp ${{ env.release_file }} oss://llaoj/${{ env.project_name }}/ --update --meta x-oss-object-acl:public-read -e ${{ secrets.OSS_ENDPOINT }} -i ${{ secrets.OSS_ACCESS_KEY_ID }} -k ${{ secrets.OSS_SECRET_ACCESS_KEY }}
