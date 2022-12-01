@@ -83,7 +83,7 @@ func_harbor_install() {
 	sed -i "s/^hostname:.*/hostname: ${HARBOR_VIP}/" "$harbor_yml_file"
 	sed -i "s/^data_volume:.*/data_volume: ${root_dir}\/data/" "$harbor_yml_file"
 	cp "$harbor_yml_file" "$harbor_dir"
-	source "$harbor_dir"/install.sh
+	"$harbor_dir"/install.sh
 }
 
 func_status() {
