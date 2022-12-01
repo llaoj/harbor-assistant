@@ -85,13 +85,3 @@ rbd: map failed: (2) No such file or directory
 ```
 
 Run `modprobe rbd` on the host to install rbd module
-
-3. Read-only file system
-
-```shell
-$ rbd device map kubernetes/harbor_data --id=admin --keyring=/etc/ceph/ceph.client.admin.keyring
-rbd: sysfs write failed
-In some cases useful info is found in syslog - try "dmesg | tail".
-rbd: map failed: (30) Read-only file system
-```
-
