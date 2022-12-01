@@ -2,29 +2,78 @@
 
 set -xe
 
-root_dir="/mnt/harbor-offline-installer"
+export CEPH_IMAGE_SPEC=${CEPH_POOL_NAME}/${CEPH_IMAGE_NAME}
+root_dir="/mnt/${CEPH_IMAGE_SPEC}"
+harbor_installer_dir="$root_dir/harbor_installer"
 
 # ceph config
 ceph_keyring_file="/etc/ceph/ceph.client.${CEPH_USER}.keyring"
-ceph_conf_file="/etc/ceph/ceph.conf"
-ceph_rbdmap_file="/etc/ceph/rbdmap"
-if [ ! -f "$ceph_keyring_file" ]; then
-	echo -e "[client.${CEPH_USER}]\n\tkey=${CEPH_USER_KEY}" >"$ceph_keyring_file"
-fi
-if [ ! -f "$ceph_conf_file" ]; then
-	echo -e "[global]\nmon_host=${CEPH_MON_HOST}" >/etc/ceph/ceph.conf
-fi
-if [ ! -f "$ceph_rbdmap_file" ]; then
-	echo "${CEPH_IMAGE_SPEC} id=${CEPH_USER},keyring=${ceph_keyring_file}" >$ceph_rbdmap_file
-fi
+echo -e "[client.${CEPH_USER}]\n  key=${CEPH_USER_KEY}" >"$ceph_keyring_file"
+echo -e "[global]\nmon_host=${CEPH_MON_HOST}" >/etc/ceph/ceph.conf
+echo "${CEPH_IMAGE_SPEC} id=${CEPH_USER},keyring=${ceph_keyring_file}" >/etc/ceph/rbdmap
 
 # load rbd kernel module
-if [ -d "/sys/module/rbd" ]; then
-	if ! modprobe rbd >/dev/null 2>&1; then
-		echo "Error: load rbd module failed!"
-		exit $?
-	fi
+if [ ! -d "/sys/module/rbd" ]; then
+	echo "loading rbd module"
+	modprobe rbd || exit $?
 fi
+
+func_device_unmap() {
+	local mapped_device_list
+	if mapped_device_list=$(rbd device list -t krbd | grep "$CEPH_POOL_NAME" | grep "$CEPH_IMAGE_NAME" | awk '{print $5}'); then
+		if [ "$mapped_device_list" ]; then
+			for mapped_device in $mapped_device_list; do
+				# umount mapped device before unmap
+				if mount -l | grep "$mapped_device"; then
+					umount "$root_dir" || exit $?
+				fi
+
+				echo "unmapping device $mapped_device"
+				rbd device unmap "$mapped_device" || exit $?
+			done
+		fi
+	fi
+}
+
+func_device_map() {
+	func_device_unmap
+
+	local clients
+	# watcher=192.168.55.2:0/2900899764 client.14844 cookie=139644428642944
+	if clients=$(rbd status "$CEPH_IMAGE_SPEC" | grep "watcher=" | awk -F "watcher=" '{print $2}' | awk '{print $1}' | uniq); then
+		if [ "$clients" ]; then
+			for client in $clients; do
+				echo "adding $client to osd blacklist"
+				ceph osd blacklist add "$client" || exit $?
+			done
+		fi
+	fi
+
+	echo "mapping device $CEPH_IMAGE_SPEC"
+	rbd device map "$CEPH_IMAGE_SPEC" --id="$CEPH_USER" --keyring="$ceph_keyring_file" || exit $?
+
+	if [ -d "$root_dir" ]; then
+		mkdir -p "$root_dir" || exit $?
+	fi
+
+	mapped_device=$(rbd device list | grep "$CEPH_POOL_NAME" | grep "$CEPH_IMAGE_NAME" | awk '{print $5}' | head -n 1)
+	if [ "$mapped_device" ]; then
+		# make file system
+		if ! blkid "$mapped_device"; then
+			mkfs.ext4 "$mapped_device" || exit $?
+		fi
+
+		echo "mounting $mapped_device to $root_dir"
+		mount -vn "$mapped_device" "$root_dir" || exit $?
+	fi
+
+	if [ "$clients" ]; then
+		for client in $clients; do
+			echo "removing $client from osd blacklist"
+			ceph osd blacklist rm "$client" || exit $?
+		done
+	fi
+}
 
 func_status() {
 	if [ "$(pgrep -cf harbor)" -gt 0 ]; then
@@ -37,33 +86,23 @@ func_status() {
 }
 
 func_start() {
-	if [ ! -d "$root_dir" ]; then
-		if ! rbdmap map; then
-			# watcher=192.168.55.2:0/2900899764 client.14844 cookie=139644428642944
-			local client_id
-			client_id=$(rbd status "${CEPH_IMAGE_SPEC}" | grep "watcher=" | awk -F "watcher=" '{print $2}' | awk '{print $1}')
-			ceph osd blacklist add "$client_id"
-		fi
-	fi
+	func_device_map
 
-	cd $root_dir || return
+	cd "$harbor_installer_dir" || return
 	if [ "$(func_status)" ]; then
 		docker-compose down -v
 	fi
 	docker-compose up -d
-
-	if [ -n "$client_id" ]; then
-		ceph osd blacklist rm "$client_id"
-	fi
 }
 
 func_stop() {
-	cd $root_dir || return
+
+	cd "$harbor_installer_dir" || return
 	if [ "$(func_status)" ]; then
 		docker-compose down -v
 	fi
 
-	rbdmap unmap
+	func_device_unmap
 }
 
 case "$1" in

@@ -2,8 +2,8 @@
 
 - Kernel>=4.5
 - Kernel rbd module suport
-- Ceph-common version >= ceph version
-- Ceph code name: `nautilus`
+- ceph-common 14.2: ceph codename <`nautilus`>
+- docker-compose suport
 
 ## Why
 
@@ -51,7 +51,7 @@ Run this contianer<`registry.cn-beijing.aliyuncs.com/llaoj/harbor-assistant`> be
 1. create rbd image
 
 ```
-rbd create -p kubernetes harbor_data --size 2G
+rbd create -p kubernetes harbor_data --size 2G --image-feature=layering
 ```
 
 ## Q&A
