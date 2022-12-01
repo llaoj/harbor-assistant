@@ -1,43 +1,6 @@
 #!/bin/bash
-set -xe
 
-# pull latest tag
-# docker pull registry.cn-beijing.aliyuncs.com/llaoj/harbor-assistant
-# run assistant:
-# required by docker-compose
-#   -v /var/run/docker.sock:/var/run/docker.sock
-# required by modprobe to add kernel module
-#   -v /lib/modules:/lib/modules
-#   -v /sys:/sys
-# required by keepalived
-#   --cap-add=NET_ADMIN
-#   --cap-add=NET_BROADCAST
-#   --cap-add=NET_RAW
-# required by rbd
-#   -v /dev:/dev
-# required by mount
-#   -v /run/mount:/run/mount
-# docker run \
-#     -it --rm \
-#     --name harbor-assistant \
-#     -e CEPH_MON_HOST='10.206.65.20,10.206.65.21,10.206.65.22' \
-#     -e CEPH_USER='admin' \
-#     -e CEPH_USER_KEY='AQAflFtjHD12AxAAMvsTCWU59t1Tm0VyytmJuA==' \
-#     -e CEPH_IMAGE_SPEC='kubernetes/harbor_data' \
-#     -e KEEPALIVED_VIP='10.206.65.111' \
-#     -e KEEPALIVED_ROLE='master' \
-#     -e INTERFACE='eth0' \
-#     --net=host \
-#     --pid=host \
-#     --privileged \
-#     --cap-add=SYS_ADMIN \
-#     -v /var/run/docker.sock:/var/run/docker.sock \
-#     -v /lib/modules:/lib/modules \
-#     -v /sys:/sys \
-#     -v /run/mount:/run/mount \
-#     -v /dev:/dev \
-#     -v /mnt:/mnt \
-#     registry.cn-beijing.aliyuncs.com/llaoj/harbor-assistant bash
+set -xe
 
 exec 2>&1
 

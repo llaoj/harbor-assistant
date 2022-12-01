@@ -2,15 +2,15 @@
 
 set -xe
 
-export CEPH_IMAGE_SPEC=${CEPH_POOL_NAME}/${CEPH_IMAGE_NAME}
-root_dir="/mnt/${CEPH_IMAGE_SPEC}"
+ceph_image_spec="${CEPH_POOL_NAME}/${CEPH_IMAGE_NAME}"
+root_dir="/mnt/${ceph_image_spec}"
 harbor_installer_dir="$root_dir/harbor_installer"
 
 # ceph config
 ceph_keyring_file="/etc/ceph/ceph.client.${CEPH_USER}.keyring"
 echo -e "[client.${CEPH_USER}]\n  key=${CEPH_USER_KEY}" >"$ceph_keyring_file"
 echo -e "[global]\nmon_host=${CEPH_MON_HOST}" >/etc/ceph/ceph.conf
-echo "${CEPH_IMAGE_SPEC} id=${CEPH_USER},keyring=${ceph_keyring_file}" >/etc/ceph/rbdmap
+echo "$ceph_image_spec id=${CEPH_USER},keyring=${ceph_keyring_file}" >/etc/ceph/rbdmap
 
 # load rbd kernel module
 if [ ! -d "/sys/module/rbd" ]; then
@@ -27,7 +27,6 @@ func_device_unmap() {
 				if mount -l | grep "$mapped_device"; then
 					umount "$root_dir" || exit $?
 				fi
-
 				echo "unmapping device $mapped_device"
 				rbd device unmap "$mapped_device" || exit $?
 			done
@@ -40,7 +39,7 @@ func_device_map() {
 
 	local clients
 	# watcher=192.168.55.2:0/2900899764 client.14844 cookie=139644428642944
-	if clients=$(rbd status "$CEPH_IMAGE_SPEC" | grep "watcher=" | awk -F "watcher=" '{print $2}' | awk '{print $1}' | uniq); then
+	if clients=$(rbd status "$ceph_image_spec" | grep "watcher=" | awk -F "watcher=" '{print $2}' | awk '{print $1}' | uniq); then
 		if [ "$clients" ]; then
 			for client in $clients; do
 				echo "adding $client to osd blacklist"
@@ -49,8 +48,8 @@ func_device_map() {
 		fi
 	fi
 
-	echo "mapping device $CEPH_IMAGE_SPEC"
-	rbd device map "$CEPH_IMAGE_SPEC" --id="$CEPH_USER" --keyring="$ceph_keyring_file" || exit $?
+	echo "mapping device $ceph_image_spec"
+	rbd device map "$ceph_image_spec" --id="$CEPH_USER" --keyring="$ceph_keyring_file" || exit $?
 
 	if [ -d "$root_dir" ]; then
 		mkdir -p "$root_dir" || exit $?
@@ -62,7 +61,6 @@ func_device_map() {
 		if ! blkid "$mapped_device"; then
 			mkfs.ext4 "$mapped_device" || exit $?
 		fi
-
 		echo "mounting $mapped_device to $root_dir"
 		mount -vn "$mapped_device" "$root_dir" || exit $?
 	fi
@@ -87,7 +85,6 @@ func_status() {
 
 func_start() {
 	func_device_map
-
 	cd "$harbor_installer_dir" || return
 	if [ "$(func_status)" ]; then
 		docker-compose down -v
@@ -101,7 +98,6 @@ func_stop() {
 	if [ "$(func_status)" ]; then
 		docker-compose down -v
 	fi
-
 	func_device_unmap
 }
 
@@ -109,15 +105,12 @@ case "$1" in
 	status)
 		func_status
 		;;
-
 	start)
 		func_start
 		;;
-
 	stop)
 		func_stop
 		;;
-
 	*)
 		echo "Usage: harborctl status | start | stop"
 		;;

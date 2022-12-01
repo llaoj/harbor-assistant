@@ -31,7 +31,7 @@ Using runit to manage these components:
 ## How to run
 
 ```
-wget https://llaoj.oss-cn-beijing.aliyuncs.com/harbor-assistant/harbor-assistant.tar.gz -O - | tar -xzvf -
+wget https://llaoj.oss-cn-beijing.aliyuncs.com/harbor-assistant/harbor-assistant.tar.gz -O - | tar -xzvf - -C /opt
 ```
 
 ## OS ENV
