@@ -41,6 +41,7 @@ script_dir=$(
     cd "$(dirname "${BASH_SOURCE[0]}")"
     pwd
 )
+has_vip=$(func_has_vip)
 
 if ! "$script_dir"/keepalivedctl status; then
     "$script_dir"/keepalivedctl start
@@ -60,7 +61,6 @@ func_has_vip() {
     echo "N"
 }
 
-has_vip=$(func_has_vip)
 while true; do
     if [ "$has_vip" == "Y" ] && [ "$(func_has_vip)" == "N" ]; then
         echo "vip gone"
