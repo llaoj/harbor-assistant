@@ -38,16 +38,17 @@ systemctl harbor-assistant start
 
 ## OS ENV
 
-| ENV             | Required | Note                  |
-| --------------- | -------- | --------------------- |
-| CEPH_MON_HOST   | Y        | comma separated       |
-| CEPH_USER       | Y        |                       |
-| CEPH_USER_KEY   | Y        |                       |
-| CEPH_POOL_NAME  | Y        |                       |
-| CEPH_IMAGE_NAME | Y        |                       |
-| KEEPALIVED_VIP  | Y        |                       |
-| KEEPALIVED_ROLE | Y        | `master` or `backup`  |
-| INTERFACE       | Y        | network dev interface |
+| ENV             | Required | Note                          |
+| --------------- | -------- | ----------------------------- |
+| HARBOR_VERSION  | Y        | only `v2.6.2` support for now |
+| HARBOR_VIP      | Y        |                               |
+| CEPH_MON_HOST   | Y        | comma separated               |
+| CEPH_USER       | Y        |                               |
+| CEPH_USER_KEY   | Y        |                               |
+| CEPH_POOL_NAME  | Y        |                               |
+| CEPH_IMAGE_NAME | Y        |                               |
+| KEEPALIVED_ROLE | Y        | `master` or `backup`          |
+| INTERFACE       | Y        | network dev interface         |
 
 
 ## Example
