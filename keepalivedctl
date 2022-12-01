@@ -3,6 +3,11 @@ set -xe
 
 exec 2>&1
 
+script_dir=$(
+    cd "$(dirname "${BASH_SOURCE[0]}")"
+    pwd
+)
+
 # prepare keepalived
 if [ ! -d "/sys/module/ip_vs" ]; then
     echo "loading ip_vs module"
@@ -21,11 +26,11 @@ func_status() {
 
 func_start() {
     echo "generating $keepalived_conf_file"
-    keepalived_conf_template_file="./keepalived/keepalived-${KEEPALIVED_ROLE}.template"
+    keepalived_conf_template_file="${script_dir}/keepalived/keepalived-${KEEPALIVED_ROLE}.template"
     keepalived_conf_dir="/etc/keepalived"
     keepalived_conf_file="${keepalived_conf_dir}/keepalived.conf"
     envsubst <"$keepalived_conf_template_file" >"$keepalived_conf_file" || exit $?
-    cp ./keepalived/harbor_healthz $keepalived_conf_dir
+    cp "${script_dir}"/keepalived/harbor_healthz $keepalived_conf_dir
     docker stop keepalived
     docker rm keepalived
     docker run -d --name=keepalived --cap-add=NET_ADMIN --cap-add=NET_BROADCAST --cap-add=NET_RAW --net=host --volume /etc/keepalived:/etc/keepalived osixia/keepalived:2.0.20
