@@ -30,10 +30,14 @@ Using runit to manage these components:
 
 ## How to run
 
-```
+```shell
 wget https://llaoj.oss-cn-beijing.aliyuncs.com/harbor-assistant/harbor-assistant.tar.gz -O - | tar -xzvf - -C /opt
+chmod -R +x /opt/harbor-assistant
 cp /opt/harbor-assistant/harbor-assistant.service /usr/lib/systemd/system/
-systemctl harbor-assistant start
+mv /opt/harbor-assistant/.env.example /opt/harbor-assistant/.env
+vi /opt/harbor-assistant/.env
+# edit .env and save(:wq)
+systemctl start harbor-assistant
 ```
 
 ## OS ENV

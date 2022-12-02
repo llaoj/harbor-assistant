@@ -41,11 +41,6 @@ script_dir=$(
     cd "$(dirname "${BASH_SOURCE[0]}")"
     pwd
 )
-has_vip=$(func_has_vip)
-
-if ! "$script_dir"/keepalivedctl status; then
-    "$script_dir"/keepalivedctl start
-fi
 
 func_has_vip() {
     local ip_list
@@ -60,6 +55,12 @@ func_has_vip() {
     fi
     echo "N"
 }
+
+has_vip=$(func_has_vip)
+
+if ! "$script_dir"/keepalivedctl status; then
+    "$script_dir"/keepalivedctl start
+fi
 
 while true; do
     if [ "$has_vip" == "Y" ] && [ "$(func_has_vip)" == "N" ]; then

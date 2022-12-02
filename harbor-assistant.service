@@ -2,8 +2,8 @@
 [Unit]
 Description=Harbor Assistant
 Documentation=Ensure the high availability of Harbor using Ceph RBD storage through Keepalived
-After=docker.target
-Wants=docker.target
+After=docker.service
+Wants=docker.service
 
 [Service]
 EnvironmentFile=/opt/harbor-assistant/.env
@@ -13,6 +13,9 @@ Type=simple
 KillMode=process
 Restart=always
 RestartSec=2
+StandardError=journal
+StandardOutput=journal
+StandardInput=null
 
 [Install]
 WantedBy=multi-user.target
