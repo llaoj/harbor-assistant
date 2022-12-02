@@ -1,10 +1,3 @@
-## Versions
-
-- Kernel>=4.5
-- Kernel rbd module suport
-- ceph-common 14.2: ceph codename <`nautilus`>
-- docker-compose suport
-
 ## Why
 
 部署两个Harbor实例来实现高可用, 存储使用CephRBD, RBD块设备是独占存储, 性能上要优于NAS存储.
@@ -27,6 +20,13 @@ Using runit to manage these components:
 - keepalived: check harbor and manage the vip
 - harborctl: manage harbor instance, such as start stop status
 - keepalivedctl: manage keepalived container, such as start status
+
+## Requirements
+
+- Kernel >= 4.5
+- Kernel rbd module suport
+- ceph-common 14.2: ceph codename <`nautilus`>
+- docker-compose suport
 
 ## How to run
 
