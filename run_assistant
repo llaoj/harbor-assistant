@@ -47,7 +47,7 @@ func_has_vip() {
     ip_list=$(hostname -I | sed 's/ /\n/g' | grep -v '^$')
     if [ "$ip_list" ]; then
         for ip in $ip_list; do
-            if [ "$ip" -eq "$HARBOR_VIP" ]; then
+            if [ "$ip" = "$HARBOR_VIP" ]; then
                 echo "Y"
                 return
             fi
@@ -63,12 +63,12 @@ if ! "$script_dir"/keepalivedctl status; then
 fi
 
 while true; do
-    if [ "$has_vip" == "Y" ] && [ "$(func_has_vip)" == "N" ]; then
+    if [ "$has_vip" = "Y" ] && [ "$(func_has_vip)" = "N" ]; then
         echo "vip gone"
         has_vip="N"
         "$script_dir"/harborctl stop
     fi
-    if [ "$has_vip" == "N" ] && [ "$(func_has_vip)" == "Y" ]; then
+    if [ "$has_vip" = "N" ] && [ "$(func_has_vip)" = "Y" ]; then
         echo "vip coming"
         has_vip="Y"
         "$script_dir"/harborctl start
