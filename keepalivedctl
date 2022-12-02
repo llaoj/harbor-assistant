@@ -3,6 +3,7 @@ set -xe
 
 exec 2>&1
 
+container_name="keepalived"
 script_dir=$(
     cd "$(dirname "${BASH_SOURCE[0]}")"
     pwd
@@ -15,7 +16,7 @@ if [ ! -d "/sys/module/ip_vs" ]; then
 fi
 
 func_status() {
-    if [ "$(pgrep -cf keepalived)" -gt 0 ]; then
+    if [ "$(docker ps -qf name=$container_name)" ]; then
         echo "keepalived is running..."
         return 0
     else
@@ -33,7 +34,7 @@ func_start() {
     cp "${script_dir}"/keepalived/harbor_healthz $keepalived_conf_dir
     docker stop keepalived
     docker rm keepalived
-    docker run -d --name=keepalived --cap-add=NET_ADMIN --cap-add=NET_BROADCAST --cap-add=NET_RAW --net=host --volume /etc/keepalived:/etc/keepalived osixia/keepalived:2.0.20
+    docker run -d --name=$container_name --cap-add=NET_ADMIN --cap-add=NET_BROADCAST --cap-add=NET_RAW --net=host --volume /etc/keepalived:/etc/keepalived osixia/keepalived:2.0.20
 }
 
 case "$1" in

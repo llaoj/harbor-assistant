@@ -87,7 +87,7 @@ func_harbor_install() {
 }
 
 func_status() {
-	if [ "$(pgrep -cf harbor)" -gt 0 ]; then
+	if [ "$(docker ps -qf name=harbor*)" ]; then
 		echo "harbor is running..."
 		return 0
 	else
