@@ -38,7 +38,7 @@ func_start() {
     fi
     envsubst <"$keepalived_conf_template_file" >"$keepalived_conf_file" || exit $?
     cp "${script_dir}"/keepalived/harbor_healthz $keepalived_conf_dir
-    docker run -d --rm --restart=always --name=$container_name --cap-add=NET_ADMIN --cap-add=NET_BROADCAST --cap-add=NET_RAW --net=host --volume /etc/keepalived:/etc/keepalived osixia/keepalived:2.0.20
+    docker run -d --rm --name=$container_name --cap-add=NET_ADMIN --cap-add=NET_BROADCAST --cap-add=NET_RAW --net=host --volume /etc/keepalived:/etc/keepalived osixia/keepalived:2.0.20
 }
 
 case "$1" in
