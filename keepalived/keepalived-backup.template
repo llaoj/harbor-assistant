@@ -1,11 +1,10 @@
-! /etc/keepalived/keepalived.conf
-! Configuration File for keepalived
 global_defs {
     router_id ROUTER_2
     enable_script_security
 }
+
 vrrp_script harbor_healthz {
-  script "/etc/keepalived/harbor_healthz ${HARBOR_VIP}"
+  script "/container/service/keepalived/assets/harbor_healthz ${HARBOR_VIP}"
   interval 5
   weight -2
   fall 12
