@@ -55,7 +55,7 @@ func_device_map() {
 	echo "mapping device $ceph_image_spec"
 	rbd device map "$ceph_image_spec" --id="$CEPH_USER" --keyring="$ceph_keyring_file" || exit $?
 
-	if [ -d "$root_dir" ]; then
+	if [ ! -d "$root_dir" ]; then
 		mkdir -p "$root_dir" || exit $?
 	fi
 
@@ -99,13 +99,13 @@ func_status() {
 func_start() {
 	func_device_map
 	if [ -d "$harbor_dir" ]; then
-		func_harbor_install
-	else
 		cd "$harbor_dir" || return
 		if func_status; then
 			docker-compose down -v
 		fi
 		docker-compose up -d
+	else
+		func_harbor_install
 	fi
 
 }
