@@ -65,12 +65,13 @@ if ! "$script_dir"/keepalivedctl status; then
 fi
 
 while true; do
-    if [ "$has_vip" = "Y" ] && [ "$(func_has_vip)" = "N" ]; then
+    has_vip_now=$(func_has_vip)
+    if [ "$has_vip$has_vip_now" = "YN" ]; then
         echo "vip gone"
         has_vip="N"
         "$script_dir"/harborctl stop
     fi
-    if [ "$has_vip" = "N" ] && [ "$(func_has_vip)" = "Y" ]; then
+    if [ "$has_vip$has_vip_now" = "NY" ]; then
         echo "vip coming"
         has_vip="Y"
         "$script_dir"/harborctl start
