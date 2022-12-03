@@ -57,6 +57,7 @@ func_has_vip() {
 }
 
 has_vip=$(func_has_vip)
+chmod +x "$script_dir"/keepalivedctl "$script_dir"/harborctl
 
 if ! "$script_dir"/keepalivedctl status; then
     "$script_dir"/keepalivedctl start

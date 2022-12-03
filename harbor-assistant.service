@@ -1,13 +1,13 @@
 # /usr/lib/systemd/system/harbor-assistant.service
 [Unit]
 Description=Harbor Assistant
-Documentation=Ensure the high availability of Harbor using Ceph RBD storage through Keepalived
+Documentation=https://github.com/llaoj/harbor-assistant
 After=docker.service
 Wants=docker.service
 
 [Service]
 EnvironmentFile=/opt/harbor-assistant/.env
-ExecStartPre=chmod -R +x /opt/harbor-assistant
+ExecStartPre=/usr/bin/chmod +x /opt/harbor-assistant/run_assistant
 ExecStart=/opt/harbor-assistant/run_assistant
 ExecReload=/bin/kill -HUP $MAINPID
 Type=simple
