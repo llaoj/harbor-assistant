@@ -2,7 +2,8 @@
 
 # The IP address or hostname to access admin UI and registry service.
 # DO NOT use localhost or 127.0.0.1, because Harbor needs to be accessed by external clients.
-hostname: reg.mydomain.com
+# DO NOT modify this field, it will be replaced automatically.
+hostname: {{ HOSTNAME }}
 
 # http related config
 http:
@@ -44,8 +45,7 @@ database:
   max_open_conns: 900
 
 # The default data volume
-# DO NOT modify this field
-# it will bebe replaced automatically
+# DO NOT modify this field, it will be replaced automatically.
 data_volume: {{ DATA_VOLUME }}
 
 # Harbor Storage settings by default is using /data dir on local filesystem

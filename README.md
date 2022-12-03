@@ -41,7 +41,7 @@ wget https://llaoj.oss-cn-beijing.aliyuncs.com/harbor-assistant/harbor-assistant
 
 ```shell
 mv /opt/harbor-assistant/.env.example /opt/harbor-assistant/.env
-mv /opt/harbor-assistant/harbor.yml.example /opt/harbor-assistant/harbor.yml
+mv /opt/harbor-assistant/harbor.yml.HARBOR_VERSION /opt/harbor-assistant/harbor.yml
 # edit .env and harbor.yml
 ```
 
