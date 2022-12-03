@@ -1,5 +1,6 @@
 global_defs {
     router_id ROUTER_2
+    script_user root
     enable_script_security
 }
 
