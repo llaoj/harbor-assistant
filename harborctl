@@ -80,7 +80,7 @@ func_device_map() {
 func_harbor_install() {
 	wget https://llaoj.oss-cn-beijing.aliyuncs.com/harbor-assistant/harbor-offline-installer-"${HARBOR_VERSION}".tgz -O - | tar xzvf - -C "$root_dir"
 	local harbor_yml_file="$script_dir"/harbor.yml
-	if [ ! -f "$harbor_yml_file" ]; then
+	if [ ! -e "$harbor_yml_file" ]; then
 		echo "harbor config file <$harbor_yml_file> not found!"
 		exit
 	fi
