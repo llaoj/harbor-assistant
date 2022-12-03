@@ -44,7 +44,9 @@ database:
   max_open_conns: 900
 
 # The default data volume
-data_volume: /data
+# DO NOT modify this field
+# it will bebe replaced automatically
+data_volume: {{ DATA_VOLUME }}
 
 # Harbor Storage settings by default is using /data dir on local filesystem
 # Uncomment storage_service setting If you want to using external storage

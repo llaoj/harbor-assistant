@@ -7,6 +7,10 @@ errorExit() {
     exit 1
 }
 
+if curl --silent --max-time 3 http://localhost:80/api/v2.0/health | grep -q unhealthy; then
+    errorExit "Error GET http://localhost:80/api/v2.0/health"
+fi
+
 if ip addr | grep -q "$VIP"; then
     if curl --silent --max-time 3 http://"$VIP":80/api/v2.0/health | grep -q unhealthy; then
         errorExit "Error GET http://${VIP}:80/api/v2.0/health"

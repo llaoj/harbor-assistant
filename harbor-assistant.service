@@ -7,6 +7,7 @@ Wants=docker.service
 
 [Service]
 EnvironmentFile=/opt/harbor-assistant/.env
+ExecStartPre=chmod -R +x /opt/harbor-assistant
 ExecStart=/opt/harbor-assistant/run_assistant
 ExecReload=/bin/kill -HUP $MAINPID
 Type=simple

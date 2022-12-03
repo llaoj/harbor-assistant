@@ -30,13 +30,24 @@ Using runit to manage these components:
 
 ## How to run
 
+1. install HarborAssistant
+
 ```shell
 wget https://llaoj.oss-cn-beijing.aliyuncs.com/harbor-assistant/harbor-assistant.tar.gz -O - | tar -xzvf - -C /opt
-chmod -R +x /opt/harbor-assistant
 /bin/cp -f /opt/harbor-assistant/harbor-assistant.service /usr/lib/systemd/system/
+```
+
+2. prepare config file
+
+```shell
 mv /opt/harbor-assistant/.env.example /opt/harbor-assistant/.env
-vi /opt/harbor-assistant/.env
-# edit .env and save(:wq)
+mv /opt/harbor-assistant/harbor.yml.example /opt/harbor-assistant/harbor.yml
+# edit .env and harbor.yml
+```
+
+3. start HarborAssistant
+
+```shell
 systemctl daemon-reload
 systemctl start harbor-assistant
 ```
