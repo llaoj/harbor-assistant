@@ -64,6 +64,13 @@ if ! "$script_dir"/keepalivedctl status; then
     "$script_dir"/keepalivedctl start
 fi
 
+if [ "$has_vip" = "Y" ]; then
+    echo "vip is here"
+    if ! "$script_dir"/harborctl status; then
+        "$script_dir"/harborctl start
+    fi
+fi
+
 while true; do
     has_vip_now=$(func_has_vip)
     if [ "$has_vip$has_vip_now" = "YN" ]; then
