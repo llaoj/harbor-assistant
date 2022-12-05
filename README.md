@@ -101,3 +101,11 @@ rbd: map failed: (2) No such file or directory
 ```
 
 Run `modprobe rbd` on the host to install rbd module
+
+3. docker-compose: command not found
+
+install docker-compose
+
+```shell
+wget -q https://llaoj.oss-cn-beijing.aliyuncs.com/harbor-assistant/docker-compose-linux-x86_64 -O /usr/bin/docker-compose && chmod +x /usr/bin/docker-compose
+```

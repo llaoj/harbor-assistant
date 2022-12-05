@@ -13,7 +13,7 @@ script_dir=$(
 # ceph config
 ceph_conf_dir="/etc/ceph"
 if [ ! -e $ceph_conf_dir ]; then
-	mkdir -p "$ceph_conf_dir" || exit $?
+	mkdir -p "$ceph_conf_dir"
 fi
 ceph_keyring_file="$ceph_conf_dir/ceph.client.${CEPH_USER}.keyring"
 echo -e "[client.${CEPH_USER}]\n  key=${CEPH_USER_KEY}" >"$ceph_keyring_file"
@@ -22,7 +22,7 @@ echo -e "[global]\nmon_host=${CEPH_MON_HOST}" >$ceph_conf_dir/ceph.conf
 # load rbd kernel module
 if [ ! -d "/sys/module/rbd" ]; then
 	echo "loading rbd module"
-	modprobe rbd || exit $?
+	modprobe rbd
 fi
 
 func_device_unmap() {
@@ -32,10 +32,10 @@ func_device_unmap() {
 			for mapped_device in $mapped_device_list; do
 				# umount mapped device before unmap
 				if mount -l | grep "$mapped_device"; then
-					umount "$root_dir" || exit $?
+					umount "$root_dir"
 				fi
 				echo "unmapping device $mapped_device"
-				rbd device unmap "$mapped_device" || exit $?
+				rbd device unmap "$mapped_device"
 			done
 		fi
 	fi
@@ -50,38 +50,37 @@ func_device_map() {
 		if [ "$clients" ]; then
 			for client in $clients; do
 				echo "adding $client to osd blacklist"
-				ceph osd blacklist add "$client" || exit $?
+				ceph osd blacklist add "$client"
 			done
 		fi
 	fi
 
 	echo "mapping device $ceph_image_spec"
-	rbd device map "$ceph_image_spec" --id="$CEPH_USER" --keyring="$ceph_keyring_file" || exit $?
+	rbd device map "$ceph_image_spec" --id="$CEPH_USER" --keyring="$ceph_keyring_file"
 
 	if [ ! -d "$root_dir" ]; then
-		mkdir -p "$root_dir" || exit $?
+		mkdir -p "$root_dir"
 	fi
 
 	mapped_device=$(rbd device list | grep "$CEPH_POOL_NAME" | grep "$CEPH_IMAGE_NAME" | awk '{print $5}' | head -n 1)
 	if [ "$mapped_device" ]; then
 		# make file system
 		if ! blkid "$mapped_device"; then
-			mkfs.ext4 "$mapped_device" || exit $?
+			mkfs.ext4 "$mapped_device"
 		fi
 		echo "mounting $mapped_device to $root_dir"
-		mount -vn "$mapped_device" "$root_dir" || exit $?
+		mount -vn "$mapped_device" "$root_dir"
 	fi
 
 	if [ "$clients" ]; then
 		for client in $clients; do
 			echo "removing $client from osd blacklist"
-			ceph osd blacklist rm "$client" || exit $?
+			ceph osd blacklist rm "$client"
 		done
 	fi
 }
 
 func_harbor_install() {
-	wget -q https://llaoj.oss-cn-beijing.aliyuncs.com/harbor-assistant/harbor-offline-installer-"${HARBOR_VERSION}".tgz -O - | tar xzvf - -C "$root_dir"
 	local harbor_yml_file="$script_dir"/harbor.yml
 	if [ ! -e "$harbor_yml_file" ]; then
 		echo "harbor config file <$harbor_yml_file> not found!"
@@ -89,6 +88,10 @@ func_harbor_install() {
 	fi
 	sed -i "s/{{ HOSTNAME }}/${HARBOR_VIP}/" "$harbor_yml_file"
 	sed -i "s/{{ DATA_VOLUME }}/${root_dir//\//\\/}\/data/" "$harbor_yml_file"
+	local install_sh_file="$harbor_dir"/install.sh
+	if [ ! -e "$install_sh_file" ]; then
+		wget -q https://llaoj.oss-cn-beijing.aliyuncs.com/harbor-assistant/harbor-offline-installer-"${HARBOR_VERSION}".tgz -O - | tar xzvf - -C "$root_dir"
+	fi
 	cp "$harbor_yml_file" "$harbor_dir"
 	"$harbor_dir"/install.sh
 }
@@ -105,16 +108,7 @@ func_status() {
 
 func_start() {
 	func_device_map
-	if [ -d "$harbor_dir" ]; then
-		cd "$harbor_dir" || return
-		if func_status; then
-			docker-compose down -v
-		fi
-		docker-compose up -d
-	else
-		func_harbor_install
-	fi
-
+	func_harbor_install
 }
 
 func_stop() {
