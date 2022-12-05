@@ -11,10 +11,13 @@ script_dir=$(
 )
 
 # ceph config
-ceph_keyring_file="/etc/ceph/ceph.client.${CEPH_USER}.keyring"
+ceph_conf_dir="/etc/ceph"
+if [ ! -e $ceph_conf_dir ]; then
+	mkdir -p "$ceph_conf_dir" || exit $?
+fi
+ceph_keyring_file="$ceph_conf_dir/ceph.client.${CEPH_USER}.keyring"
 echo -e "[client.${CEPH_USER}]\n  key=${CEPH_USER_KEY}" >"$ceph_keyring_file"
-echo -e "[global]\nmon_host=${CEPH_MON_HOST}" >/etc/ceph/ceph.conf
-echo "$ceph_image_spec id=${CEPH_USER},keyring=${ceph_keyring_file}" >/etc/ceph/rbdmap
+echo -e "[global]\nmon_host=${CEPH_MON_HOST}" >$ceph_conf_dir/ceph.conf
 
 # load rbd kernel module
 if [ ! -d "/sys/module/rbd" ]; then
