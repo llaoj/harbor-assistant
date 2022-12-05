@@ -11,7 +11,7 @@ Advantage:
 
 Disadvantage:
 
-- 故障转移期间服务不可用约几分钟
+- 故障转移期间服务短暂不可用
 
 ## Components
 
