@@ -69,6 +69,11 @@ if [ "$has_vip" = "Y" ]; then
     if ! "$script_dir"/harborctl status; then
         "$script_dir"/harborctl start
     fi
+else
+    echo "vip is not here"
+    if "$script_dir"/harborctl status; then
+        "$script_dir"/harborctl stop
+    fi
 fi
 
 while true; do
