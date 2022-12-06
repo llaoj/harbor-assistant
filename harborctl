@@ -92,6 +92,10 @@ func_harbor_install() {
 	if [ ! -e "$install_sh_file" ]; then
 		wget -q https://llaoj.oss-cn-beijing.aliyuncs.com/harbor-assistant/harbor-offline-installer-"${HARBOR_VERSION}".tgz -O - | tar xzvf - -C "$root_dir"
 	fi
+
+	# fix: OSError: [Errno 74] Bad message: '/config/shared/trust-certificates'
+	rm -rf "$harbor_dir"/common
+
 	cp "$harbor_yml_file" "$harbor_dir"
 	"$harbor_dir"/install.sh
 }
