@@ -4,6 +4,10 @@ set -xe
 
 exec 2>&1
 
+if [ -z "$HOSTNAME" ]; then
+    echo "HOSTNAME is undefined"
+    exit 1
+fi
 if [ -z "$HARBOR_VERSION" ]; then
     echo "HARBOR_VERSION is undefined"
     exit 1
@@ -42,21 +46,6 @@ script_dir=$(
     pwd
 )
 
-func_has_vip() {
-    local ip_list
-    ip_list=$(hostname -I | sed 's/ /\n/g' | grep -v '^$')
-    if [ "$ip_list" ]; then
-        for ip in $ip_list; do
-            if [ "$ip" = "$HARBOR_VIP" ]; then
-                echo "Y"
-                return
-            fi
-        done
-    fi
-    echo "N"
-}
-
-has_vip=$(func_has_vip)
 chown -R root:root "$script_dir"
 chmod +x "$script_dir"/keepalivedctl "$script_dir"/harborctl
 
@@ -64,29 +53,17 @@ if ! "$script_dir"/keepalivedctl status; then
     "$script_dir"/keepalivedctl start
 fi
 
-if [ "$has_vip" = "Y" ]; then
-    echo "vip is here"
-    if ! "$script_dir"/harborctl status; then
-        "$script_dir"/harborctl start
-    fi
-else
-    echo "vip is not here"
-    if "$script_dir"/harborctl status; then
-        "$script_dir"/harborctl stop
-    fi
-fi
-
 while true; do
-    has_vip_now=$(func_has_vip)
-    if [ "$has_vip$has_vip_now" = "YN" ]; then
-        echo "vip gone"
-        has_vip="N"
-        "$script_dir"/harborctl stop
+    if ip addr | grep -q "$HARBOR_VIP"; then
+        echo "vip is here"
+        if ! "$script_dir"/harborctl status; then
+            "$script_dir"/harborctl start
+        fi
+    else
+        echo "vip is not here"
+        if "$script_dir"/harborctl status; then
+            "$script_dir"/harborctl stop
+        fi
     fi
-    if [ "$has_vip$has_vip_now" = "NY" ]; then
-        echo "vip coming"
-        has_vip="Y"
-        "$script_dir"/harborctl start
-    fi
-    sleep 1
+    sleep 2
 done
