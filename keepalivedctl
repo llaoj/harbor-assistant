@@ -9,7 +9,7 @@ script_dir=$(
     pwd
 )
 keepalived_conf_dir="${script_dir}/keepalived"
-keepalived_conf_template_file="${keepalived_conf_dir}/keepalived-${KEEPALIVED_ROLE}.template"
+keepalived_conf_template_file="${keepalived_conf_dir}/keepalived.template"
 keepalived_conf_file="${keepalived_conf_dir}/keepalived.conf"
 healthz_file="${keepalived_conf_dir}/harbor_healthz"
 
