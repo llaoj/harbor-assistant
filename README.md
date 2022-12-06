@@ -49,6 +49,7 @@ mv /opt/harbor-assistant/harbor.yml.HARBOR_VERSION /opt/harbor-assistant/harbor.
 
 ```shell
 systemctl daemon-reload
+systemctl enable harbor-assistant
 systemctl start harbor-assistant
 ```
 
