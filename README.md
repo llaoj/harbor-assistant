@@ -64,6 +64,7 @@ systemctl start harbor-assistant
 | CEPH_USER_KEY   | Y        |                               |
 | CEPH_POOL_NAME  | Y        |                               |
 | CEPH_IMAGE_NAME | Y        |                               |
+| KEEPALIVED_ROLE | Y        | `master` or `backup`          |
 | INTERFACE       | Y        | network dev interface         |
 
 

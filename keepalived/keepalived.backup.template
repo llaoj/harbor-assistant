@@ -1,5 +1,5 @@
 global_defs {
-    router_id ${HARBOR_NAME}
+    router_id ROUTER_2
     script_user root
     enable_script_security
 }
@@ -16,8 +16,7 @@ vrrp_instance VI_1 {
     state BACKUP
     interface ${INTERFACE}
     virtual_router_id 51
-    priority 101
-    nopreempt
+    priority 100
     authentication {
         auth_type PASS
         auth_pass 42

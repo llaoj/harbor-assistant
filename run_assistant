@@ -4,10 +4,6 @@ set -xe
 
 exec 2>&1
 
-if [ -z "$HOSTNAME" ]; then
-    echo "HOSTNAME is undefined"
-    exit 1
-fi
 if [ -z "$HARBOR_VERSION" ]; then
     echo "HARBOR_VERSION is undefined"
     exit 1
@@ -38,6 +34,10 @@ if [ -z "$CEPH_USER_KEY" ]; then
 fi
 if [ -z "$KEEPALIVED_ROLE" ]; then
     echo "KEEPALIVED_ROLE is undefined"
+    exit 1
+fi
+if [ -z "$INTERFACE" ]; then
+    echo "INTERFACE is undefined"
     exit 1
 fi
 
