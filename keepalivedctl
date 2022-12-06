@@ -16,7 +16,7 @@ healthz_file="${keepalived_conf_dir}/harbor_healthz"
 # prepare keepalived
 if [ ! -d "/sys/module/ip_vs" ]; then
     echo "loading ip_vs module"
-    modprobe ip_vs || exit $?
+    modprobe ip_vs
 fi
 
 func_status() {
@@ -34,7 +34,7 @@ func_start() {
     if [ ! -e "$keepalived_conf_file" ]; then
         touch "$keepalived_conf_file"
     fi
-    envsubst <"$keepalived_conf_template_file" >"$keepalived_conf_file" || exit $?
+    envsubst <"$keepalived_conf_template_file" >"$keepalived_conf_file"
     chmod 644 "$keepalived_conf_file"
     chmod 744 "$healthz_file"
     echo "running keepalived container"
