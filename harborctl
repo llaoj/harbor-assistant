@@ -10,20 +10,23 @@ script_dir=$(
 	pwd
 )
 
-# ceph config
 ceph_conf_dir="/etc/ceph"
-if [ ! -e $ceph_conf_dir ]; then
-	mkdir -p "$ceph_conf_dir"
-fi
 ceph_keyring_file="$ceph_conf_dir/ceph.client.${CEPH_USER}.keyring"
-echo -e "[client.${CEPH_USER}]\n  key=${CEPH_USER_KEY}" >"$ceph_keyring_file"
-echo -e "[global]\nmon_host=${CEPH_MON_HOST}" >$ceph_conf_dir/ceph.conf
 
-# load rbd kernel module
-if [ ! -d "/sys/module/rbd" ]; then
-	echo "loading rbd module"
-	modprobe rbd
-fi
+func_init() {
+	# ceph config
+	if [ ! -e $ceph_conf_dir ]; then
+		mkdir -p "$ceph_conf_dir"
+	fi
+	echo -e "[client.${CEPH_USER}]\n  key=${CEPH_USER_KEY}" >"$ceph_keyring_file"
+	echo -e "[global]\nmon_host=${CEPH_MON_HOST}" >$ceph_conf_dir/ceph.conf
+
+	# load rbd kernel module
+	if [ ! -d "/sys/module/rbd" ]; then
+		echo "loading rbd module"
+		modprobe rbd
+	fi
+}
 
 func_device_unmap() {
 	local mapped_device_list
@@ -124,6 +127,9 @@ func_stop() {
 }
 
 case "$1" in
+	init)
+		func_init
+		;;
 	status)
 		func_status
 		;;
@@ -134,6 +140,6 @@ case "$1" in
 		func_stop
 		;;
 	*)
-		echo "Usage: harborctl status | start | stop"
+		echo "Usage: harborctl init | status | start | stop"
 		;;
 esac

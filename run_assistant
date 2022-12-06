@@ -48,6 +48,7 @@ script_dir=$(
 
 chown -R root:root "$script_dir"
 chmod +x "$script_dir"/keepalivedctl "$script_dir"/harborctl
+"$script_dir"/harborctl init
 
 if ! "$script_dir"/keepalivedctl status; then
     "$script_dir"/keepalivedctl start
