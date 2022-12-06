@@ -3,10 +3,11 @@
 VIP=$1
 
 errorExit() {
-    echo "*** $*" 1>&2
+    echo "*** $*" >/proc/1/fd/1
     exit 1
 }
 
+echo "Harbor health check..." >/proc/1/fd/1
 if ip addr | grep -q "$VIP"; then
     curl --silent --max-time 3 http://localhost:80/api/v2.0/ping -o /dev/null || errorExit "Error GET http://localhost:80/api/v2.0/ping"
     curl --silent --max-time 3 http://"$VIP":80/api/v2.0/ping -o /dev/null || errorExit "Error GET http://${VIP}:80/api/v2.0/ping"
