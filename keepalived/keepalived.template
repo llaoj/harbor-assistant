@@ -1,5 +1,5 @@
 global_defs {
-    router_id ${HOSTNAME}
+    router_id ${HARBOR_NAME}
     script_user root
     enable_script_security
 }
