@@ -13,7 +13,7 @@ vrrp_script harbor_healthz {
 }
 
 vrrp_instance VI_1 {
-    state MASTER
+    state BACKUP
     interface ${INTERFACE}
     virtual_router_id 51
     priority 101

@@ -113,19 +113,22 @@ wget -q https://llaoj.oss-cn-beijing.aliyuncs.com/harbor-assistant/docker-compos
 
 4. Get a newer version of e2fsck
 
-output:
+Problem output:
 
+```
 e2fsck 1.42.9 (28-Dec-2013) 
 /dev/rbd0 has unsupported feature(s): metadata_csum 
 e2fsck: Get a newer version of e2fsck!
-
-solution:
-
 ```
+
+Solution: install new version e2fsck
+
+```shell
 wget http://downloads.sourceforge.net/project/e2fsprogs/e2fsprogs/v1.43.1/e2fsprogs-1.43.1.tar.gz
 tar xzf e2fsprogs-1.43.1.tar.gz
 cd e2fsprogs-1.43.1
-./configure # <== if this step fail, check the config.log file, it could just be that you are missing the "libc6-dev" package on your system
+# if this step fail, check the config.log file, it could just be that you are missing the "libc6-dev" package on your system
+./configure
 make
 cd e2fsck/
 make install
