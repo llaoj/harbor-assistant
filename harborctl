@@ -131,6 +131,8 @@ func_stop() {
 		# DO NOT cd harbor_dir use -f instead
 		local docker_compose_file="$harbor_dir"/docker-compose.yml
 		if [ -e "$docker_compose_file" ]; then
+			# sometimes file may lost, for example
+			# fix: open <harbor_dir>/common/config/registryctl/env: no such file or directory
 			if ! docker-compose -f "$docker_compose_file" down -v; then
 				grep "container_name:" "$docker_compose_file" | awk '{print $2}' | xargs -I {} docker stop {}
 			fi
