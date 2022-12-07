@@ -9,10 +9,10 @@ errorExit() {
 
 echo "Harbor health check..." >/proc/1/fd/1
 if ip addr | grep -q "$VIP"; then
-    if ! response=$(curl --silent --max-time 3 http://localhost:80/api/v2.0/ping) || [ "$response" != "pong" ]; then
+    if ! curl --silent --max-time 3 http://localhost:80/api/v2.0/ping | grep -q "Pong"; then
         errorExit "Error GET http://localhost:80/api/v2.0/ping"
     fi
-    if ! response=$(curl --silent --max-time 3 http://"$VIP":80/api/v2.0/ping) || [ "$response" = "pong" ]; then
+    if ! curl --silent --max-time 3 http://"$VIP":80/api/v2.0/ping | grep -q "Pong"; then
         errorExit "Error GET http://${VIP}:80/api/v2.0/ping"
     fi
 fi
