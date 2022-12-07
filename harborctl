@@ -126,9 +126,10 @@ func_start() {
 }
 
 func_stop() {
-	cd "$harbor_dir" || return
 	if func_status; then
-		docker-compose down -v
+		# fix: umount: target is busy.
+		# DO NOT cd harbor_dir use -f instead
+		docker-compose -f "$harbor_dir"/docker-compose.yml down -v
 	fi
 	func_device_unmap
 }
