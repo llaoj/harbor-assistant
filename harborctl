@@ -74,7 +74,7 @@ func_device_map() {
 		fi
 
 		# fix: structure needs cleaning
-		e2fsck -vyf "$mapped_device"
+		e2fsck -vyf "$mapped_device" || true
 
 		echo "mounting $mapped_device to $root_dir"
 		mount -vn "$mapped_device" "$root_dir"
