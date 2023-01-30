@@ -26,6 +26,14 @@ Disadvantage:
 - ceph-common 14.2: ceph codename <`nautilus`>
 - docker-compose suport
 
+## Prepare
+
+1. create rbd image
+
+```
+rbd create -p kubernetes harbor_data --size 2G --image-feature=layering
+```
+
 ## How to run
 
 1. install HarborAssistant
@@ -65,14 +73,6 @@ systemctl start harbor-assistant
 | KEEPALIVED_ROLE | Y        | `master` or `backup`          |
 | INTERFACE       | Y        | network dev interface         |
 
-
-## Example
-
-1. create rbd image
-
-```
-rbd create -p kubernetes harbor_data --size 2G --image-feature=layering
-```
 
 ## Q&A
 
