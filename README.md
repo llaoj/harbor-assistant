@@ -15,8 +15,6 @@ Disadvantage:
 
 ## Components
 
-Using runit to manage these components:
-
 - keepalived: check harbor and manage the vip
 - harborctl: manage harbor instance, such as start stop status
 - keepalivedctl: manage keepalived container, such as start status
