@@ -51,6 +51,11 @@ chown -R root:root "$script_dir"
 chmod +x "$script_dir"/keepalivedctl "$script_dir"/harborctl
 "$script_dir"/harborctl init
 
+func_stop() {
+    "$script_dir"/keepalivedctl stop
+    "$script_dir"/harborctl stop
+}
+
 while true; do
     if ! "$script_dir"/keepalivedctl status; then
         "$script_dir"/keepalivedctl start
@@ -68,7 +73,3 @@ while true; do
     sleep 2
 done
 
-func_stop() {
-    "$script_dir"/keepalivedctl stop
-    "$script_dir"/harborctl stop
-}
