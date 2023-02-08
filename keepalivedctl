@@ -49,6 +49,12 @@ func_start() {
         osixia/keepalived:2.0.17
 }
 
+func_stop() {
+    if func_status; then
+        docker stop $container_name
+    fi
+}
+
 case "$1" in
     status)
         func_status
@@ -56,7 +62,10 @@ case "$1" in
     start)
         func_start
         ;;
+    stop)
+        func_stop
+        ;;
     *)
-        echo "Usage: keepalivedctl status | start"
+        echo "Usage: keepalivedctl status | start | stop"
         ;;
 esac

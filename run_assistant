@@ -1,4 +1,5 @@
 #!/bin/bash
+trap 'func_stop; exit' 1 2 3 6 15
 
 set -xe
 
@@ -50,11 +51,11 @@ chown -R root:root "$script_dir"
 chmod +x "$script_dir"/keepalivedctl "$script_dir"/harborctl
 "$script_dir"/harborctl init
 
-if ! "$script_dir"/keepalivedctl status; then
-    "$script_dir"/keepalivedctl start
-fi
-
 while true; do
+    if ! "$script_dir"/keepalivedctl status; then
+        "$script_dir"/keepalivedctl start
+    fi
+
     if ip addr | grep -q "$HARBOR_VIP"; then
         echo "vip is here"
         if ! "$script_dir"/harborctl status; then
@@ -62,9 +63,12 @@ while true; do
         fi
     else
         echo "vip is not here"
-        if "$script_dir"/harborctl status; then
-            "$script_dir"/harborctl stop
-        fi
+        "$script_dir"/harborctl stop
     fi
     sleep 2
 done
+
+func_stop() {
+    "$script_dir"/keepalivedctl stop
+    "$script_dir"/harborctl stop
+}

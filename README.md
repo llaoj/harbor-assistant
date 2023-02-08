@@ -36,27 +36,22 @@ rbd create -p kubernetes harbor_data --size 2G --image-feature=layering
 
 ## How to run
 
-1. install HarborAssistant
+Install HarborAssistant
 
 ```shell
-wget https://llaoj.oss-cn-beijing.aliyuncs.com/harbor-assistant/harbor-assistant.tar.gz -O - | tar -xzvf - -C /opt
-/bin/cp -f /opt/harbor-assistant/harbor-assistant.service /usr/lib/systemd/system/
+HARBOR_VERSION=v2.6.2 \
+  && wget https://llaoj.oss-cn-beijing.aliyuncs.com/harbor-assistant/harbor-assistant.tar.gz -O - | tar -xzvf - -C /opt \
+  && /bin/cp -f /opt/harbor-assistant/harbor-assistant.service /usr/lib/systemd/system/ \
+  && mv /opt/harbor-assistant/.env.example /opt/harbor-assistant/.env \
+  && mv /opt/harbor-assistant/harbor.yml.$HARBOR_VERSION /opt/harbor-assistant/harbor.yml
 ```
 
-2. prepare config file
+Config HarborAssistant, edit `.env` and `harbor.yml`, and re-run:
 
-```shell
-mv /opt/harbor-assistant/.env.example /opt/harbor-assistant/.env
-mv /opt/harbor-assistant/harbor.yml.HARBOR_VERSION /opt/harbor-assistant/harbor.yml
-# edit .env and harbor.yml
 ```
-
-3. start HarborAssistant
-
-```shell
-systemctl daemon-reload
-systemctl enable harbor-assistant
-systemctl start harbor-assistant
+systemctl daemon-reload \
+  && systemctl enable harbor-assistant \
+  && systemctl start harbor-assistant
 ```
 
 ## OS ENV
