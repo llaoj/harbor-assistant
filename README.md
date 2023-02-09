@@ -40,6 +40,7 @@ Install HarborAssistant
 
 ```shell
 HARBOR_VERSION=v2.6.2 \
+  && rm -rf /opt/harbor-assistant \
   && wget https://llaoj.oss-cn-beijing.aliyuncs.com/harbor-assistant/harbor-assistant.tar.gz -O - | tar -xzvf - -C /opt \
   && /bin/cp -f /opt/harbor-assistant/harbor-assistant.service /usr/lib/systemd/system/ \
   && mv /opt/harbor-assistant/.env.example /opt/harbor-assistant/.env \
