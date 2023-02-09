@@ -73,7 +73,7 @@ CEPH_USER must have the following abilities:
 
 - rbd device list -t krbd
 - rbd status "$ceph_image_spec"
-- rbd device map "$ceph_image_spec" --id="$CEPH_USER" --keyring="$ceph_keyring_file"
+- rbd device map "$ceph_image_spec"
 - rbd device unmap "$mapped_device"
 - ceph osd blacklist add "$client"
 - ceph osd blacklist rm "$client"
